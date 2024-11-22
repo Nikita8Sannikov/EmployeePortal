@@ -120,32 +120,6 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        // login: (state, action: PayloadAction<User>) => {
-        //     state.user = action.payload
-        //     state.exists = true
-
-        //     state.token = action.payload.token || ''
-        //     localStorage.setItem("token", action.payload.token || '')
-        // },
-        // logout: (state) => {
-        //     state.user = null
-        //     state.exists = false
-        //     state.token = null
-        //     state.error = null
-        //     localStorage.removeItem("token")
-        // },
-
-        // register: (state, action: PayloadAction<User>) => {
-
-        // },
-        // remain: (state) => {
-        //     const token = localStorage.getItem("token")
-        //     if (token) {
-        //         state.token = token
-        //         state.exists = true
-        //     }
-        // }
-
     },
     extraReducers: (builder) => {
         builder

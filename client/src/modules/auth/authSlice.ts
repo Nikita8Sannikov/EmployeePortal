@@ -2,10 +2,10 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface User {
     _id: string,
+    email: string,
     name: string,
     first_name?: string,
     last_name?: string,
-    email: string,
     password?: string,
     token?: string
 }
@@ -15,7 +15,6 @@ interface LoginState {
     error: string | null,
     exists: boolean,
     status: "idle" | "loading" | "succeeded" | "failed"
-    loading: boolean
 }
 const initialState: LoginState = {
     user: null,
@@ -23,12 +22,17 @@ const initialState: LoginState = {
     error: null,
     exists: false,
     status: "idle",
-    loading: false
 }
 
-export const signIn = createAsyncThunk<User, { email: string; password: string, onSuccess?: () => void }>(
+export const signIn = createAsyncThunk<User, {
+    email: string; password: string,
+    //  onSuccess?: () => void
+}>(
     "auth/signIn",
-    async (data: { email: string; password: string, onSuccess?: () => void }) => {
+    async (data: {
+        email: string; password: string,
+        //  onSuccess?: () => void
+    }) => {
         const response = await fetch("/api/auth/login", {
             method: "POST",
             headers: {
@@ -50,12 +54,12 @@ export const signIn = createAsyncThunk<User, { email: string; password: string, 
 export const signOut = createAsyncThunk<User, void>(
     "auth/signOut",
     async () => {
-        const response = await fetch("https://reqres.in/api/logout", {
+        const response = await fetch("/api/auth/logout", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-
+            // headers: {
+            //     "Content-Type": "application/json",
+            // },
+            //body возможно понадобится в будущем
         })
         if (!response.ok) {
             throw new Error(`Ошибка: ${response.status}`);
@@ -65,6 +69,7 @@ export const signOut = createAsyncThunk<User, void>(
         return json
     }
 )
+
 export const register = createAsyncThunk<User, { email: string; password: string, name: string }>(
     "auth/register",
     async (data: { email: string; password: string }) => {
@@ -188,14 +193,12 @@ const authSlice = createSlice({
                 state.user = action.payload
                 state.status = "succeeded"
                 state.exists = true
-                state.loading = false
             })
             .addCase(remind.rejected, (state, action) => {
                 state.status = 'failed'
                 state.exists = false
                 localStorage.removeItem('token')
                 state.error = action.error.message || "failed"
-                state.loading = false;
             })
     }
 })

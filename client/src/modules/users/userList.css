@@ -1,0 +1,128 @@
+body,
+html {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+}
+
+.user-list-container {
+	width: 100vw;
+	padding: 0;
+	margin: 0 auto;
+	box-sizing: border-box;
+	background-color: #fff;
+}
+
+.user-list-header {
+	background-color: #6a0dad;
+	color: #fff;
+	padding: 20px;
+	text-align: center;
+	position: relative;
+	/* width: 100%; */
+}
+
+.user-list-header .title {
+	font-size: 2rem;
+	margin: 0;
+}
+
+.user-list-header .subtitle {
+	width: 80%;
+	margin: 0 auto;
+	margin-top: 10px;
+	font-size: 1rem;
+	color: #e0e0e0;
+}
+
+.logout-button {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	border: 1px solid white;
+	color: #fff;
+	border: none;
+	padding: 10px 15px;
+	cursor: pointer;
+	border-radius: 5px;
+}
+@media (max-width: 600px) {
+	.logout-button {
+		position: absolute;
+		top: 20px;
+		right: 20px;
+		border: 1px solid white;
+		color: #fff;
+		border: none;
+		padding: 7px 10px;
+		cursor: pointer;
+		border-radius: 5px;
+	}
+}
+
+.user-cards {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	gap: 20px;
+	padding: 20px;
+	width: 100vw;
+	box-sizing: border-box;
+}
+
+.user-card {
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 10px;
+	text-align: center;
+	padding: 20px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	transition: transform 0.2s;
+}
+
+.user-card:hover {
+	transform: scale(1.05);
+	border: 1px solid black;
+}
+
+.avatar {
+	border-radius: 50%;
+	width: 100px;
+	height: 100px;
+}
+
+.name {
+	margin-top: 10px;
+	font-size: 1.2rem;
+	color: #333;
+}
+
+.show-more-button {
+	margin: 20px auto;
+	display: block;
+	background-color: #512689;
+	color: #fff;
+	border: none;
+	padding: 10px 20px;
+	cursor: pointer;
+	border-radius: 5px;
+}
+.button {
+	display: block;
+	margin: 0 auto;
+	border-radius: 8px;
+	padding: 0.6em 1.2em;
+	font-size: 1em;
+	font-weight: 500;
+	font-family: inherit;
+	background-color: #fff;
+	color: black;
+	border: 1px solid black;
+	cursor: pointer;
+	transition: border-color 0.25s;
+}
+button:hover {
+	background-color: #512689;
+	color: white;
+}

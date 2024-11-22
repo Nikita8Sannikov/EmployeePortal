@@ -72,7 +72,7 @@ export const signOut = createAsyncThunk<User, void>(
 
 export const register = createAsyncThunk<User, { email: string; password: string, name: string }>(
     "auth/register",
-    async (data: { email: string; password: string }) => {
+    async (data: { email: string; password: string, name: string }) => {
         const response = await fetch("/api/auth/register", {
             method: "POST",
             headers: {

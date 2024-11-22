@@ -108,6 +108,15 @@ router.post(
 	}
 );
 
+// /api/auth/logout
+router.post("/logout", async (req, res) => {
+	try {
+		res.status(200).json({ message: "Logout successful" });
+	} catch (e) {
+		res.status(500).json({ message: "Smth wrong, try again" });
+	}
+});
+
 // /api/auth/me
 router.get("/me", async (req, res) => {
 	try {

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store";
 import { RootState } from "../../store";
 import "./userDetails.css";
+import { remind } from "../auth/authSlice";
 
 const UserProfile: React.FC = () => {
 	const { id } = useParams();
@@ -12,7 +13,6 @@ const UserProfile: React.FC = () => {
 	const navigate = useNavigate();
 	const dispatch: AppDispatch = useDispatch();
 	const { user, status } = useSelector((state: RootState) => state.users);
-	// console.log(user);
 
 	// const user = useSelector((state: RootState) => state.auth.user);
 	// if (user) {
@@ -41,6 +41,10 @@ const UserProfile: React.FC = () => {
 		onEdit: useCallback(() => {
 			navigate(`/edit/${id}`);
 		}, [dispatch]),
+		onBack: useCallback(() => {
+			dispatch(remind());
+			navigate("/");
+		}, [dispatch]),
 	};
 
 	return (
@@ -49,7 +53,8 @@ const UserProfile: React.FC = () => {
 				<>
 					<header className="profile-header">
 						<button
-							onClick={() => navigate("/")}
+							// onClick={() => navigate("/")}
+							onClick={callbacks.onBack}
 							className="back-button"
 						>
 							Назад

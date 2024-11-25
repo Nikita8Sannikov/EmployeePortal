@@ -11,6 +11,8 @@ const UsersList: React.FC = () => {
 	const user = useSelector((state: RootState) => state.auth.user);
 	const currentUser = user?._id;
 	// console.log("пользователь", currentUser);
+	// console.log(users);
+	// console.log(user);
 
 	const { page, total_pages, error, status } = useSelector(
 		(state: RootState) => state.users
@@ -33,18 +35,7 @@ const UsersList: React.FC = () => {
 
 	useEffect(() => {
 		dispatch(fetchUsers(page));
-		// console.log(`Статус загрузки: ${status}`);
-		// console.log(page);
-		// console.log(`Рендеринг компонента UsersList: ${users.length}`);
 	}, [dispatch, page]);
-
-	// useEffect(() => {
-	// 	console.log(`Текущее количество пользователей: ${users.length}`);
-	// }, [users]);
-
-	// useEffect(() => {
-	// 	console.log(`Текущий Статус загрузки: ${status}`);
-	// }, [status]);
 
 	const callbacks = {
 		onLogout: useCallback(() => {
@@ -52,21 +43,11 @@ const UsersList: React.FC = () => {
 		}, [dispatch]),
 	};
 
-	// console.log(
-	// 	"что будет",
-	// 	users.filter((user) => {
-	// 		console.log("userID", user.id);
-	// 		console.log("currentUser", currentUser);
-
-	// 		return user.id !== currentUser;
-	// 	})
-	// );
-
 	return (
 		<div className="user-list-container">
 			<header className="user-list-header">
 				{/* <Link to="/">{user?.name}</Link> */}
-				<div onClick={() => handleUserClick(user?._id ?? 0)}>
+				<div onClick={() => handleUserClick(user ? user?._id : "")}>
 					{user?.first_name ? user?.first_name : user?.name}{" "}
 					{user?.last_name && user?.last_name}
 					{/* {user?.name} */}
@@ -94,12 +75,12 @@ const UsersList: React.FC = () => {
 				{error && <p>Ошибка: {error}</p>}
 				{users &&
 					users
-						.filter((user) => user.id !== currentUser)
+						.filter((user) => user._id !== currentUser)
 						.map((user) => (
 							<div
-								key={user.id}
+								key={user._id}
 								className="user-card"
-								onClick={() => handleUserClick(user.id)}
+								onClick={() => handleUserClick(user._id)}
 							>
 								<img
 									src={user.avatar}

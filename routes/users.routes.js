@@ -7,18 +7,16 @@ const router = Router();
 router.get("/userlist", async (req, res) => {
 	try {
 		// Получаем параметры из query
-		const page = parseInt(req.query.page) || 1; // По умолчанию 1
-		const perPage = parseInt(req.query.per_page) || 3; // По умолчанию 5
-		const skip = (page - 1) * perPage; // Сколько пропустить
+		const page = parseInt(req.query.page) || 1;
+		const perPage = parseInt(req.query.per_page) || 4;
+		const skip = (page - 1) * perPage;
 
-		const users = await User.find()
-			.skip(skip) // Пропустить нужное количество пользователей
-			.limit(perPage); // Ограничить количеством пользователей на странице
+		const users = await User.find().skip(skip).limit(perPage);
 
 		const totalUsers = await User.countDocuments();
 		const totalPages = Math.ceil(totalUsers / perPage);
 
-		// const users = await User.find(); // Запрос ко всем пользователям
+		// const users = await User.find();
 		// res.status(200).json(users);
 
 		res.status(200).json({
@@ -27,16 +25,14 @@ router.get("/userlist", async (req, res) => {
 			total: totalUsers,
 			total_pages: totalPages,
 			data: users.map((user) => ({
-				id: user._id,
+				_id: user._id,
 				email: user.email,
 				name: user.name,
 				first_name: user.first_name,
 				last_name: user.last_name,
-				// first_name: user.name.split(" ")[0], // Допустим, имя состоит из имени и фамилии
-				// last_name: user.name.split(" ")[1] || "", // Разделяем на имя и фамилию
 				avatar: user.avatar
 					? user.avatar
-					: "https://example.com/avatar.jpg", // Здесь можно добавить логику для аватарки
+					: "https://example.com/avatar.jpg",
 			})),
 		});
 	} catch (e) {

@@ -78,7 +78,7 @@ const usersSlice = createSlice({
             if (state.page === 1) {
                 state.data = data
             } else {
-                const uniqueData = data.filter(user => !state.data.some(existingUser => existingUser.id === user.id)); // Фильтруем дубликаты
+                const uniqueData = data.filter(user => !state.data.some(existingUser => existingUser._id === user._id)); // Фильтруем дубликаты
                 state.data = [...state.data, ...uniqueData]; // Добавляем только уникальных пользователей
             }
             state.total_pages = total_pages

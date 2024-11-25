@@ -2,37 +2,21 @@ import { AppDispatch, RootState } from "../../store";
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, increment, decrement } from "./usersSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./userList.css";
 import { signOut } from "../auth/authSlice";
 import SideLayout from "../../components/side-layout";
 
 const UsersList: React.FC = () => {
+	const dispatch: AppDispatch = useDispatch();
+	const navigate = useNavigate();
 	const users = useSelector((state: RootState) => state.users.data);
 	const user = useSelector((state: RootState) => state.auth.user);
 	const currentUser = user?._id;
-	// console.log("пользователь", currentUser);
-	// console.log(users);
-	// console.log(user);
 
-	const { page, total_pages, error, status } = useSelector(
+	const { page, total_pages, error } = useSelector(
 		(state: RootState) => state.users
 	);
-	// const isMobile = false;
-	const dispatch: AppDispatch = useDispatch();
-	const navigate = useNavigate();
-
-	const handleShowMore = () => {
-		dispatch(increment());
-	};
-
-	const handleShowLess = () => {
-		dispatch(decrement());
-	};
-
-	const handleUserClick = (id: string) => {
-		navigate(`/profile/${id}`);
-	};
 
 	useEffect(() => {
 		dispatch(fetchUsers(page));
@@ -42,6 +26,16 @@ const UsersList: React.FC = () => {
 		onLogout: useCallback(() => {
 			dispatch(signOut());
 		}, [dispatch]),
+		onShowMore: useCallback(() => {
+			dispatch(increment());
+		}, [dispatch]),
+		onShowLess: useCallback(() => {
+			dispatch(decrement());
+		}, [dispatch]),
+		onUserClick: useCallback(
+			(id: string) => navigate(`/profile/${id}`),
+			[navigate]
+		),
 	};
 
 	return (
@@ -50,17 +44,19 @@ const UsersList: React.FC = () => {
 				<SideLayout side="between">
 					<div
 						className="user-name"
-						onClick={() => handleUserClick(user ? user?._id : "")}
+						onClick={() =>
+							callbacks.onUserClick(user ? user?._id : "")
+						}
 					>
 						{`Вы - `}
 						{user?.first_name ? user?.first_name : user?.name}{" "}
 						{user?.last_name && user?.last_name}
-						{/* {user?.name} */}
 					</div>
 					<button
 						onClick={callbacks.onLogout}
 						className="logout-button"
 					>
+						{/* {isMobile ? "=>" : "Выход"} */}
 						Выход
 					</button>
 				</SideLayout>
@@ -72,16 +68,8 @@ const UsersList: React.FC = () => {
 					задачах, которые ложатся на их плечи, и умеющие находить
 					выход из любых, даже самых сложных ситуаций.
 				</div>
-				{/* <button
-					  onClick={handleLogout}
-					className="logout-button"
-				>
-					{isMobile ? "=>" : "Выход"}
-				</button> */}
 			</header>
 			<div className="user-cards">
-				{/* {status === "loading" && <p>Загрузка...</p>} */}
-
 				{error && <p>Ошибка: {error}</p>}
 				{users &&
 					users
@@ -90,7 +78,7 @@ const UsersList: React.FC = () => {
 							<div
 								key={user._id}
 								className="user-card"
-								onClick={() => handleUserClick(user._id)}
+								onClick={() => callbacks.onUserClick(user._id)}
 							>
 								<img
 									src={user.avatar}
@@ -104,11 +92,11 @@ const UsersList: React.FC = () => {
 						))}
 			</div>
 			{page < total_pages ? (
-				<button onClick={handleShowMore} className="show-button">
+				<button onClick={callbacks.onShowMore} className="show-button">
 					Показать больше
 				</button>
 			) : (
-				<button onClick={handleShowLess} className="show-button">
+				<button onClick={callbacks.onShowLess} className="show-button">
 					Показать меньше
 				</button>
 			)}

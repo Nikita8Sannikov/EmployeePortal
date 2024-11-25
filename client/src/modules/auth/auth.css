@@ -1,42 +1,67 @@
 .auth-form {
-  background-color: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
-  margin: 100px auto;
+	background-color: white;
+	padding: 30px;
+	border-radius: 10px;
+	box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+	max-width: 400px;
+	margin: 100px auto;
 }
 
 .auth-form h2 {
-  margin-bottom: 20px;
-  font-size: 24px;
-  text-align: center;
+	margin-bottom: 20px;
+	font-size: 24px;
+	text-align: center;
 }
 
-.auth-form input {
-  margin-bottom: 15px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 100%;
+.card-action {
+	display: flex;
+	justify-content: space-evenly;
 }
 
-.auth-form button {
-  width: 100%;
-  background-color: #4caf50;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.btn {
+	margin-right: 10px;
+	color: black;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
 }
 
-.auth-form button:hover {
-  background-color: #45a049;
+.btn:hover {
+	background-color: #512689;
+	color: white;
 }
 
 .auth-form .error {
-  color: red;
-  margin-bottom: 15px;
-  text-align: center;
+	color: red;
+	margin-bottom: 15px;
+	text-align: center;
+}
+
+.input-container {
+	position: relative;
+}
+
+.input-container input {
+	margin-bottom: 15px;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	width: 100%;
+}
+
+.input-field:focus-visible {
+	border: 1px solid #535151;
+	outline: none;
+}
+
+.input-label {
+	position: absolute;
+	top: -10px;
+	left: 255px;
+	background: white;
+	padding: 0 5px;
+	font-size: 12px;
+	color: gray;
+	pointer-events: none;
 }

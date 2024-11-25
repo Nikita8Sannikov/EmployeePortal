@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
 import { register, signIn } from "./authSlice";
+import "./auth.css";
 
 const Auth = () => {
 	const dispatch: AppDispatch = useDispatch();
@@ -31,46 +32,52 @@ const Auth = () => {
 	};
 
 	return (
-		<div className="">
+		<div className="auth-form">
 			<div className="">
-				<h1>Employee__Portal</h1>
+				<h2>Employee Portal</h2>
 				<div className="">
 					<div className="">
 						<span className="">Введите имя при регистрации</span>
 						<div>
-							<div className="input-field">
-								<label htmlFor="email">Name</label>
+							<div className="input-container">
+								<label htmlFor="name" className="input-label">
+									Name
+								</label>
 								<input
-									placeholder="Введите email"
+									placeholder="Введите имя"
 									id="name"
 									type="text"
 									name="name"
-									// className="yellow-input"
+									className="input-field"
 									value={form.name}
 									onChange={changeHandler}
 								/>
 							</div>
-							<div className="input-field">
-								<label htmlFor="email">Email </label>
+							<div className="input-container">
+								<label htmlFor="email" className="input-label">
+									Email
+								</label>
 								<input
 									placeholder="Введите email"
 									id="email"
 									type="text"
 									name="email"
-									// className="yellow-input"
+									className="input-field"
 									value={form.email}
 									onChange={changeHandler}
 								/>
 							</div>
 
-							<div className="input-field">
-								<label htmlFor="Пароль">Пароль</label>
+							<div className="input-container">
+								<label htmlFor="Пароль" className="input-label">
+									Password
+								</label>
 								<input
 									placeholder="Введите пароль"
 									id="password"
 									type="password"
 									name="password"
-									// className="yellow-input"
+									className="input-field"
 									value={form.password}
 									onChange={changeHandler}
 								/>
@@ -78,11 +85,7 @@ const Auth = () => {
 						</div>
 					</div>
 					<div className="card-action">
-						<button
-							className="btn"
-							style={{ marginRight: 10 }}
-							onClick={callbacks.onLogin}
-						>
+						<button className="btn" onClick={callbacks.onLogin}>
 							Войти
 						</button>
 						<button className="btn" onClick={callbacks.onReg}>

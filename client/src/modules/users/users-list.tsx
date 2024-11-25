@@ -5,6 +5,7 @@ import { fetchUsers, increment, decrement } from "./usersSlice";
 import { Link, useNavigate } from "react-router-dom";
 import "./userList.css";
 import { signOut } from "../auth/authSlice";
+import SideLayout from "../../components/side-layout";
 
 const UsersList: React.FC = () => {
 	const users = useSelector((state: RootState) => state.users.data);
@@ -46,17 +47,26 @@ const UsersList: React.FC = () => {
 	return (
 		<div className="user-list-container">
 			<header className="user-list-header">
-				{/* <Link to="/">{user?.name}</Link> */}
-				<div onClick={() => handleUserClick(user ? user?._id : "")}>
-					{user?.first_name ? user?.first_name : user?.name}{" "}
-					{user?.last_name && user?.last_name}
-					{/* {user?.name} */}
-				</div>
-				{/* <h1>{user?.name || "Гость"}</h1> */}
+				<SideLayout side="between">
+					<div
+						className="user-name"
+						onClick={() => handleUserClick(user ? user?._id : "")}
+					>
+						{`Вы - `}
+						{user?.first_name ? user?.first_name : user?.name}{" "}
+						{user?.last_name && user?.last_name}
+						{/* {user?.name} */}
+					</div>
+					<button
+						onClick={callbacks.onLogout}
+						className="logout-button"
+					>
+						Выход
+					</button>
+				</SideLayout>
+
 				<h1 className="title">Наша команда</h1>
-				<button onClick={callbacks.onLogout} className="logout-button">
-					Выход
-				</button>
+
 				<div className="subtitle">
 					Это опытные специалисты, хорошо разбирающиеся во всех
 					задачах, которые ложатся на их плечи, и умеющие находить
@@ -94,11 +104,11 @@ const UsersList: React.FC = () => {
 						))}
 			</div>
 			{page < total_pages ? (
-				<button onClick={handleShowMore} className="button">
+				<button onClick={handleShowMore} className="show-button">
 					Показать больше
 				</button>
 			) : (
-				<button onClick={handleShowLess} className="button">
+				<button onClick={handleShowLess} className="show-button">
 					Показать меньше
 				</button>
 			)}

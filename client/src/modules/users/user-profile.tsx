@@ -6,6 +6,7 @@ import { AppDispatch } from "../../store";
 import { RootState } from "../../store";
 import "./userDetails.css";
 import { remind } from "../auth/authSlice";
+import SideLayout from "../../components/side-layout";
 
 const UserProfile: React.FC = () => {
 	const { id } = useParams();
@@ -52,31 +53,29 @@ const UserProfile: React.FC = () => {
 			{user ? (
 				<>
 					<header className="profile-header">
-						<button
-							// onClick={() => navigate("/")}
-							onClick={callbacks.onBack}
-							className="back-button"
-						>
-							Назад
-						</button>
-						<img src={user.avatar} alt={user.first_name} />
-						<div className="profile-title">
-							{user.first_name ? user.first_name : user.name}{" "}
-							{user.last_name && user.last_name}
-							<h4>Партнёр</h4>
-						</div>
-						{/* <button
-							//   onClick={handleLogout}
-							className="logout-button"
-						>
-							Выход
-						</button> */}
-						<button
-							onClick={callbacks.onEdit}
-							className="logout-button"
-						>
-							Редактировать
-						</button>
+						<SideLayout side="between">
+							<button
+								onClick={callbacks.onBack}
+								className="back-button"
+							>
+								Назад
+							</button>
+							<button
+								onClick={callbacks.onEdit}
+								className="edit-button"
+							>
+								Редактировать
+							</button>
+						</SideLayout>
+						<SideLayout side="start">
+							<img src={user.avatar} alt={user.first_name} />
+
+							<div className="profile-title">
+								{user.first_name ? user.first_name : user.name}{" "}
+								{user.last_name && user.last_name}
+								<h4>Партнёр</h4>
+							</div>
+						</SideLayout>
 					</header>
 
 					<section className="profile-content">

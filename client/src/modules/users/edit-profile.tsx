@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { RootState } from "../../store";
 
 const EditProfile = () => {
 	const { id } = useParams();
 	const navigate = useNavigate();
+	const loggedInUser = useSelector((state: RootState) => state.auth.user);
 	const [form, setForm] = useState({
 		first_name: "",
 		last_name: "",
 		avatar: "",
+		description: "",
+		role: "user",
 	});
-	const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const changeHandler = (
+		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	) => {
 		setForm({ ...form, [event.target.name]: event.target.value });
 	};
 
@@ -21,6 +28,8 @@ const EditProfile = () => {
 				first_name: data.first_name,
 				last_name: data.last_name,
 				avatar: data.avatar,
+				description: data.description,
+				role: data.role,
 			});
 		};
 		fetchUser();
@@ -69,6 +78,33 @@ const EditProfile = () => {
 					value={form.avatar}
 					onChange={changeHandler}
 				/>
+				{loggedInUser?.isAdmin && (
+					<>
+						<textarea
+							name="description"
+							value={form.description}
+							onChange={changeHandler}
+							placeholder="Описание"
+							rows={5}
+							cols={100}
+						/>
+						{/* <input
+							type="text"
+							name="description"
+							placeholder="Описание"
+							value={form.description}
+							onChange={changeHandler}
+						/> */}
+						<input
+							type="text"
+							name="role"
+							placeholder="Роль"
+							value={form.role}
+							onChange={changeHandler}
+						/>
+					</>
+				)}
+
 				<button onClick={handleSave}>Сохранить</button>
 			</form>
 		</div>

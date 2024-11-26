@@ -93,15 +93,28 @@ router.post(
 				expiresIn: "1h",
 			});
 
-			res.status(200).json({
-				token,
-				_id: user.id,
-				email: user.email,
-				name: user.name,
-				first_name: user.first_name,
-				last_name: user.last_name,
-				avatar: user.avatar,
-			});
+			if (user.isAdmin) {
+				res.status(200).json({
+					token,
+					_id: user.id,
+					email: user.email,
+					name: user.name,
+					first_name: user.first_name,
+					last_name: user.last_name,
+					avatar: user.avatar,
+					isAdmin: true,
+				});
+			} else
+				res.status(200).json({
+					token,
+					_id: user.id,
+					email: user.email,
+					name: user.name,
+					first_name: user.first_name,
+					last_name: user.last_name,
+					avatar: user.avatar,
+					isAdmin: false,
+				});
 		} catch (e) {
 			res.status(500).json({ message: "Smth wrong, try again" });
 		}

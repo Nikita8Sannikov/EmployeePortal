@@ -2,9 +2,13 @@ export type UserId = string;
 export interface User {
     _id: UserId
     email: string
+    name: string
     first_name: string
     last_name: string
     avatar: string
+    isAdmin: boolean
+    description: string
+    role: string
 }
 
 export type UserState = {

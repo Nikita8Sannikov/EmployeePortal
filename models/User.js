@@ -7,7 +7,9 @@ const schema = new Schema({
 	first_name: { type: String, required: true },
 	last_name: { type: String, required: true },
 	avatar: { type: String, default: "https://i.ibb.co/4pDNDk1/avatar.png" },
-	// isAdmin: {type: Boolean, default: false}
+	isAdmin: { type: Boolean, default: false },
+	description: { type: String, default: "" },
+	role: { type: String, default: "user" },
 });
 
 export default model("User", schema);

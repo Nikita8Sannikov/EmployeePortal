@@ -33,6 +33,9 @@ router.get("/userlist", async (req, res) => {
 				avatar: user.avatar
 					? user.avatar
 					: "https://example.com/avatar.jpg",
+				isAdmin: user.isAdmin,
+				description: user.description,
+				role: user.role,
 			})),
 		});
 	} catch (e) {
@@ -70,7 +73,7 @@ router.get("/:id", async (req, res) => {
 router.patch("/:id", async (req, res) => {
 	try {
 		const { id } = req.params;
-		const { first_name, last_name, avatar } = req.body;
+		const { first_name, last_name, avatar, description, role } = req.body;
 
 		const user = await User.findById(id);
 		if (!user) {
@@ -80,6 +83,8 @@ router.patch("/:id", async (req, res) => {
 		(user.first_name = first_name),
 			(user.last_name = last_name),
 			(user.avatar = avatar),
+			(user.description = description),
+			(user.role = role),
 			// user.name = name;
 			await user.save();
 		res.status(200).json(user);

@@ -8,6 +8,7 @@ interface User {
     last_name?: string,
     password?: string,
     token?: string
+    isAdmin?: boolean
 }
 interface LoginState {
     user: User | null,

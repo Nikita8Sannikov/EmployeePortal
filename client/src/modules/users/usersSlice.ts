@@ -64,7 +64,11 @@ const usersSlice = createSlice({
         decrement: (state) => {
             if (state.page > 1)
                 state.page -= 1
-        }
+        },
+
+        updateUsers: (state, action: PayloadAction<User[]>) => {
+            state.data = action.payload
+        },
 
     },
     extraReducers: (builder) => {
@@ -110,6 +114,6 @@ const usersSlice = createSlice({
 
 })
 
-export const { increment, decrement } = usersSlice.actions
+export const { increment, decrement, updateUsers } = usersSlice.actions
 
 export default usersSlice.reducer

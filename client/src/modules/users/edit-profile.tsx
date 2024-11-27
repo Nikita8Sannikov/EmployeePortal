@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { RootState } from "../../store";
+import { updateUsers } from "./usersSlice";
 
 const EditProfile = () => {
 	const { id } = useParams();
@@ -47,6 +48,7 @@ const EditProfile = () => {
 		console.log(data);
 
 		if (response.ok) {
+			updateUsers(data);
 			navigate(`/profile/${id}`); // Возвращаемся на страницу профиля
 		} else {
 			alert("Ошибка при сохранении данных");

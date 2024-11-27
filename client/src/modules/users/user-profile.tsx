@@ -5,7 +5,6 @@ import SideLayout from "../../components/side-layout";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store";
 import { RootState } from "../../store";
-import { remind } from "../auth/authSlice";
 import "./userDetails.css";
 
 const UserProfile: React.FC = () => {
@@ -26,9 +25,8 @@ const UserProfile: React.FC = () => {
 			navigate(`/edit/${id}`);
 		}, [navigate, id]),
 		onBack: useCallback(() => {
-			dispatch(remind());
 			navigate("/");
-		}, [dispatch, navigate]),
+		}, [navigate]),
 	};
 
 	return (

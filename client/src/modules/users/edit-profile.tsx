@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import SideLayout from "../../components/side-layout";
 import { RootState } from "../../store";
 import { updateUsers } from "./usersSlice";
+import "./edit.css";
 
 const EditProfile = () => {
 	const { id } = useParams();
@@ -55,9 +57,24 @@ const EditProfile = () => {
 		}
 	};
 
+	const callbacks = {
+		onBack: useCallback(() => {
+			navigate("/");
+		}, [navigate]),
+	};
+
 	return (
-		<div>
-			<h1>Редактирование профиля</h1>
+		<div className="edit-container">
+			<div className="edit-container-header">
+				<SideLayout side="between">
+					<button onClick={callbacks.onBack} className="back-button">
+						Назад
+					</button>
+				</SideLayout>
+
+				<h1>Редактирование профиля</h1>
+			</div>
+
 			<form>
 				<input
 					type="text"
@@ -87,8 +104,8 @@ const EditProfile = () => {
 							value={form.description}
 							onChange={changeHandler}
 							placeholder="Описание"
-							rows={5}
-							cols={100}
+							// rows={5}
+							// cols={55}
 						/>
 						{/* <input
 							type="text"
@@ -107,7 +124,9 @@ const EditProfile = () => {
 					</>
 				)}
 
-				<button onClick={handleSave}>Сохранить</button>
+				<button className="edit-container-button" onClick={handleSave}>
+					Сохранить
+				</button>
 			</form>
 		</div>
 	);

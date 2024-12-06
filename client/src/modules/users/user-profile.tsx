@@ -68,7 +68,7 @@ const UserProfile: React.FC = () => {
 								<p>
 									{user.description
 										? user.description
-										: "Описание скоро будет добавлено/ "}
+										: "Описание скоро будет добавлено "}
 								</p>
 							</div>
 						</div>

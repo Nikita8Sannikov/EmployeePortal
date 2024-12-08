@@ -1,11 +1,11 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import UsersList from "./modules/users/users-list";
-import UsersProfile from "./modules/users/user-profile";
-import EditProfile from "./modules/users/edit-profile";
-import Auth from "./modules/auth/Auth";
+import Users from "./modules/users";
+import UsersProfile from "./modules/users/userProfile";
+import EditProfile from "./modules/users/editProfile";
+import Auth from "./modules/auth";
 
 const existRouter = createBrowserRouter([
-	{ path: "/list", element: <UsersList /> },
+	{ path: "/list", element: <Users /> },
 	{ path: "/profile/:id", element: <UsersProfile /> },
 	{ path: "/edit/:id", element: <EditProfile /> },
 	{ path: "*", element: <Navigate to="/list" /> },

@@ -1,6 +1,6 @@
 import { configureStore, Middleware } from '@reduxjs/toolkit'
-import usersReducer from './modules/users/usersSlice'
-import authSlice from './modules/auth/authSlice'
+import usersReducer from './reducers/users/usersSlice'
+import authSlice from './reducers/auth/authSlice'
 
 const loggerMiddleware: Middleware = (storeAPI) => (next) => (action: unknown) => {
     const actionType = (action as { type?: string }).type ?? 'unknown action';

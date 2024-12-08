@@ -1,11 +1,15 @@
-import { AppDispatch, RootState } from "../../store";
+import { AppDispatch, RootState } from "../../../store";
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers, increment, decrement } from "./usersSlice";
+import {
+	fetchUsers,
+	increment,
+	decrement,
+} from "../../../store/reducers/users/usersSlice";
 import { useNavigate } from "react-router-dom";
 import "./userList.css";
-import { signOut } from "../auth/authSlice";
-import SideLayout from "../../components/side-layout";
+import { signOut } from "../../../store/reducers/auth/authSlice";
+import SideLayout from "../../../components/sideLayout";
 
 const UsersList: React.FC = () => {
 	const dispatch: AppDispatch = useDispatch();

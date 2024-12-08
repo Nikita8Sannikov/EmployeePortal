@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
-import { register, signIn } from "./authSlice";
+import { register, signIn } from "../../store/reducers/auth/authSlice";
 import "./auth.css";
 
-const Auth = () => {
+const Auth: React.FC = () => {
 	const dispatch: AppDispatch = useDispatch();
 	const [form, setForm] = useState({
 		email: "",

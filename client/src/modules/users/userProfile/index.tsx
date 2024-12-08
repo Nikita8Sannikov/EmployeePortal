@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchUserById } from "./usersSlice";
-import SideLayout from "../../components/side-layout";
+import { fetchUserById } from "../../../store/reducers/users/usersSlice";
+import SideLayout from "../../../components/sideLayout";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../store";
-import { RootState } from "../../store";
-import "./userDetails.css";
+import { AppDispatch, RootState } from "../../../store";
+import "./userProfile.css";
 
 const UserProfile: React.FC = () => {
 	const dispatch: AppDispatch = useDispatch();

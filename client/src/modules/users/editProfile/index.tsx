@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import SideLayout from "../../components/side-layout";
-import { RootState } from "../../store";
-import { updateUsers } from "./usersSlice";
+import SideLayout from "../../../components/sideLayout";
+import { RootState } from "../../../store";
+import { updateUsers } from "../../../store/reducers/users/usersSlice";
 import "./edit.css";
 
 const EditProfile = () => {

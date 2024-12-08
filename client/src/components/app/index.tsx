@@ -1,9 +1,8 @@
 import { RouterProvider } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "./store";
-import useRoutes from "./routes";
-import "./global.css";
-import { remind } from "./modules/auth/authSlice";
+import { AppDispatch, RootState } from "../../store";
+import useRoutes from "../../routes";
+import { remind } from "../../store/reducers/auth/authSlice";
 import { useEffect } from "react";
 
 function App() {

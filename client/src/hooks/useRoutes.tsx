@@ -1,8 +1,10 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import Users from "./modules/users";
-import UsersProfile from "./modules/users/userProfile";
-import EditProfile from "./modules/users/editProfile";
-import Auth from "./modules/auth";
+import Users from "../modules/users";
+import UsersProfile from "../modules/users/userProfile";
+import EditProfile from "../modules/users/editProfile";
+import Auth from "../modules/auth";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 const existRouter = createBrowserRouter([
 	{ path: "/list", element: <Users /> },
@@ -16,12 +18,10 @@ const notExistRouter = createBrowserRouter([
 	{ path: "*", element: <Navigate to="/" /> },
 ]);
 
-const useRoutes = (exists: boolean) => {
-	if (exists) {
-		return existRouter;
-	}
+const useRoutes = () => {
+	const exists = useSelector((state: RootState) => state.auth.exists);
 
-	return notExistRouter;
+	return exists ? existRouter : notExistRouter;
 };
 
 export default useRoutes;

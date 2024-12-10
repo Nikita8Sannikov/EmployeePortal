@@ -1,23 +1,23 @@
 import { RouterProvider } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import useRoutes from "../../routes";
+import useRoutes from "../../hooks/useRoutes";
 import { remind } from "../../store/reducers/auth/authSlice";
 import { useEffect } from "react";
+import Spinner from "../spinner";
 
 function App() {
 	const dispatch: AppDispatch = useDispatch();
-	const exists = useSelector((state: RootState) => state.auth.exists);
 	const status = useSelector((state: RootState) => state.auth.status);
-	// const [loading, setLoading] = useState(true);
-	const router = useRoutes(exists);
+	const router = useRoutes();
 
 	useEffect(() => {
 		dispatch(remind());
 	}, [dispatch]);
 
 	if (status === "loading") {
-		return <div>Загрузка...</div>;
+		return <Spinner />;
+		// return <div>Загрузка...</div>;
 	}
 
 	// useEffect(() => {

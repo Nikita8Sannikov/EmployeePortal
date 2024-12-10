@@ -92,10 +92,14 @@ router.post(
 			const token = jwt.sign({ userId: user.id }, jwtSecret, {
 				expiresIn: "1h",
 			});
-
+			res.cookie("auth_token", token, {
+				httpOnly: true,
+				sameSite: "none",
+				secure: true,
+				maxAge: 3600000,
+			});
 			if (user.isAdmin) {
 				res.status(200).json({
-					token,
 					_id: user.id,
 					email: user.email,
 					name: user.name,
@@ -106,7 +110,6 @@ router.post(
 				});
 			} else
 				res.status(200).json({
-					token,
 					_id: user.id,
 					email: user.email,
 					name: user.name,
@@ -124,6 +127,11 @@ router.post(
 // /api/auth/logout
 router.post("/logout", async (req, res) => {
 	try {
+		res.clearCookie("auth_token", {
+			httpOnly: true,
+			sameSite: "none",
+			secure: true,
+		});
 		res.status(200).json({ message: "Logout successful" });
 	} catch (e) {
 		res.status(500).json({ message: "Smth wrong, try again" });
@@ -133,7 +141,8 @@ router.post("/logout", async (req, res) => {
 // /api/auth/me
 router.get("/me", async (req, res) => {
 	try {
-		const token = req.headers.authorization?.split(" ")[1];
+		// const token = req.headers.authorization?.split(" ")[1];
+		const token = req.cookies.auth_token;
 		if (!token) {
 			return res.status(401).json({ message: "No token provided" });
 		}

@@ -4,14 +4,21 @@ import User from "../models/User.js";
 const router = Router();
 
 // /api/users/userlist
-router.get("/userlist", async (req, res) => {
+router.post("/userlist", async (req, res) => {
 	try {
+		const { page = 1, perPage = 5, authUserId } = req.body;
 		// Получаем параметры из query
-		const page = parseInt(req.query.page) || 1;
-		const perPage = parseInt(req.query.per_page) || 4;
+		// const page = parseInt(req.query.page) || 1;
+		// const perPage = parseInt(req.query.per_page) || 5;
+		if (!authUserId) {
+			return res.status(400).json({ message: "authUserId is required" });
+		}
 		const skip = (page - 1) * perPage;
 
-		const users = await User.find().skip(skip).limit(perPage);
+		// const users = await User.find().skip(skip).limit(perPage); //сюда как то добавить что бы не брать самого authUserId
+		const users = await User.find({ _id: { $ne: authUserId } }) // исключает authUserId
+			.skip(skip)
+			.limit(perPage);
 
 		const totalUsers = await User.countDocuments();
 		const totalPages = Math.ceil(totalUsers / perPage);
@@ -45,6 +52,47 @@ router.get("/userlist", async (req, res) => {
 		});
 	}
 });
+// router.get("/userlist", async (req, res) => {
+// 	try {
+// 		// Получаем параметры из query
+// 		const page = parseInt(req.query.page) || 1;
+// 		const perPage = parseInt(req.query.per_page) || 5;
+// 		const skip = (page - 1) * perPage;
+
+// 		const users = await User.find().skip(skip).limit(perPage);
+
+// 		const totalUsers = await User.countDocuments();
+// 		const totalPages = Math.ceil(totalUsers / perPage);
+
+// 		// const users = await User.find();
+// 		// res.status(200).json(users);
+
+// 		res.status(200).json({
+// 			page: page,
+// 			per_page: perPage,
+// 			total: totalUsers,
+// 			total_pages: totalPages,
+// 			data: users.map((user) => ({
+// 				_id: user._id,
+// 				email: user.email,
+// 				name: user.name,
+// 				first_name: user.first_name,
+// 				last_name: user.last_name,
+// 				avatar: user.avatar
+// 					? user.avatar
+// 					: "https://example.com/avatar.jpg",
+// 				isAdmin: user.isAdmin,
+// 				description: user.description,
+// 				role: user.role,
+// 			})),
+// 		});
+// 	} catch (e) {
+// 		res.status(500).json({
+// 			message: "Smth wrong, try again",
+// 			error: e.message,
+// 		});
+// 	}
+// });
 
 export default router;
 

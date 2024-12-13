@@ -98,26 +98,15 @@ router.post(
 				secure: true,
 				maxAge: 3600000,
 			});
-			if (user.isAdmin) {
-				res.status(200).json({
-					_id: user.id,
-					email: user.email,
-					name: user.name,
-					first_name: user.first_name,
-					last_name: user.last_name,
-					avatar: user.avatar,
-					isAdmin: true,
-				});
-			} else
-				res.status(200).json({
-					_id: user.id,
-					email: user.email,
-					name: user.name,
-					first_name: user.first_name,
-					last_name: user.last_name,
-					avatar: user.avatar,
-					isAdmin: false,
-				});
+			res.status(200).json({
+				_id: user.id,
+				email: user.email,
+				name: user.name,
+				first_name: user.first_name,
+				last_name: user.last_name,
+				avatar: user.avatar,
+				isAdmin: user.isAdmin,
+			});
 		} catch (e) {
 			res.status(500).json({ message: "Smth wrong, try again" });
 		}

@@ -1,8 +1,12 @@
 import React, { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
-import { register, signIn } from "../../store/reducers/auth/authSlice";
+import // register,
+//  signIn
+"../../store/reducers/auth/authSlice";
 import "./auth.css";
+// import AuthController from "../../core/AuthController";
+import useAuth from "../../hooks/useAuth";
 
 const Auth: React.FC = () => {
 	const dispatch: AppDispatch = useDispatch();
@@ -14,20 +18,29 @@ const Auth: React.FC = () => {
 	const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setForm({ ...form, [event.target.name]: event.target.value });
 	};
-
+	// const authController = new AuthController(dispatch);
+	const authController = useAuth();
+	// const authController = юсАуф;
+	//реализация юзАуф
 	const callbacks = {
 		onLogin: useCallback(() => {
-			dispatch(signIn({ email: form.email, password: form.password }));
+			// dispatch(signIn({ email: form.email, password: form.password }));
+			authController.signIn(form.email, form.password);
 		}, [dispatch, form.email, form.password]),
 		onReg: useCallback(() => {
 			setForm({ email: "", password: "", name: "" });
-			dispatch(
-				register({
-					email: form.email,
-					password: form.password,
-					name: form.name,
-				})
-			);
+			authController.register({
+				email: form.email,
+				password: form.password,
+				name: form.name,
+			});
+			// dispatch(
+			// 	register({
+			// 		email: form.email,
+			// 		password: form.password,
+			// 		name: form.name,
+			// 	})
+			// );
 		}, [dispatch, form.email, form.password, form.name]),
 	};
 

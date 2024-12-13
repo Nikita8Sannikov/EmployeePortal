@@ -1,23 +1,28 @@
 import React, { useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchUserById } from "../../../store/reducers/users/usersSlice";
+// import { fetchUserById } from "../../../store/reducers/users/usersSlice";
 import SideLayout from "../../../components/sideLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
 import "./userProfile.css";
+import Spinner from "../../../components/spinner";
+import useUsers from "../../../hooks/useUsers";
 
 const UserProfile: React.FC = () => {
-	const dispatch: AppDispatch = useDispatch();
+	// const dispatch: AppDispatch = useDispatch();
 	const navigate = useNavigate();
 	const { id } = useParams();
-	const { user } = useSelector((state: RootState) => state.users);
-	const loggedInUser = useSelector((state: RootState) => state.auth.user);
-
-	useEffect(() => {
-		if (id) {
-			dispatch(fetchUserById(id));
-		}
-	}, [dispatch, id]);
+	// const { user } = useSelector((state: RootState) => state.users);
+	// const loggedInUser = useSelector((state: RootState) => state.auth.user);
+	const usersController = useUsers();
+	const user = usersController.getUser(id);
+	const loggedInUser = usersController.getUser();
+	// const loggedInUser
+	// useEffect(() => {
+	// 	if (id) {
+	// 		dispatch(fetchUserById(id));
+	// 	}
+	// }, [dispatch, id]);
 
 	const callbacks = {
 		onEdit: useCallback(() => {
@@ -40,8 +45,10 @@ const UserProfile: React.FC = () => {
 							>
 								Назад
 							</button>
+							{/* здесь прописать из БЕйсЮзер canEdit */}
 							{(loggedInUser?.isAdmin ||
-								loggedInUser?._id === user?._id) && (
+								loggedInUser?.id === user.id) && (
+								// user.isAdmin &&
 								<button
 									onClick={callbacks.onEdit}
 									className="edit-button"
@@ -51,11 +58,13 @@ const UserProfile: React.FC = () => {
 							)}
 						</SideLayout>
 						<SideLayout side="start">
-							<img src={user.avatar} alt={user.first_name} />
+							<img src={user.avatar} alt={user.name} />
 
 							<div className="profile-title">
-								{user.first_name ? user.first_name : user.name}{" "}
-								{user.last_name && user.last_name}
+								{/* {user.first_name ? user.first_name : user.name}{" "}
+								{user.last_name && user.last_name} */}
+								{/* {user.regName ? user.regName : user.name} */}
+								{user.name.trim() ? user.name : user.regName}
 								<h4>{user.role}</h4>
 							</div>
 						</SideLayout>
@@ -78,7 +87,8 @@ const UserProfile: React.FC = () => {
 					</section>
 				</>
 			) : (
-				<p>Загрузка...</p>
+				// <p>Загрузка...</p>
+				<Spinner />
 			)}
 		</div>
 	);

@@ -1,15 +1,18 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import SideLayout from "../../../components/sideLayout";
-import { RootState } from "../../../store";
-import { updateUsers } from "../../../store/reducers/users/usersSlice";
+// import { RootState } from "../../../store";
+// import { updateUsers } from "../../../store/reducers/users/usersSlice";
 import "./edit.css";
+import useUsers from "../../../hooks/useUsers";
 
 const EditProfile = () => {
 	const { id } = useParams();
 	const navigate = useNavigate();
-	const loggedInUser = useSelector((state: RootState) => state.auth.user);
+	// const loggedInUser = useSelector((state: RootState) => state.auth.user);
+	const usersController = useUsers();
+	const loggedInUser = usersController.getUser();
 	const [form, setForm] = useState({
 		first_name: "",
 		last_name: "",
@@ -47,10 +50,10 @@ const EditProfile = () => {
 		});
 
 		const data = await response.json();
-		console.log(data);
 
 		if (response.ok) {
-			updateUsers(data);
+			usersController.setUser(data);
+			// updateUsers(data);
 			navigate(`/profile/${id}`); // Возвращаемся на страницу профиля
 		} else {
 			alert("Ошибка при сохранении данных");

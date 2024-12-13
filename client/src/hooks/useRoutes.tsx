@@ -3,9 +3,8 @@ import Users from "../modules/users";
 import UsersProfile from "../modules/users/userProfile";
 import EditProfile from "../modules/users/editProfile";
 import Auth from "../modules/auth";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../store";
-// import AuthController from "../core/AuthController";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 const existRouter = createBrowserRouter([
 	{ path: "/list", element: <Users /> },

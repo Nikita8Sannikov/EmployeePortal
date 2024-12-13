@@ -19,9 +19,12 @@ const notExistRouter = createBrowserRouter([
 ]);
 
 const useRoutes = () => {
-	const exists = useSelector((state: RootState) => state.auth.exists);
+	// const dispatch: AppDispatch = useDispatch();
+	// const authController = new AuthController(dispatch);
+	// const isAuth = authController.isAuth;
+	const isAuth = useSelector((state: RootState) => state.auth.isAuth);
 
-	return exists ? existRouter : notExistRouter;
+	return isAuth ? existRouter : notExistRouter;
 };
 
 export default useRoutes;

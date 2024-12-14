@@ -46,16 +46,19 @@ const UserProfile: React.FC = () => {
 								Назад
 							</button>
 							{/* здесь прописать из БЕйсЮзер canEdit */}
-							{(loggedInUser?.isAdmin ||
-								loggedInUser?.id === user.id) && (
-								// user.isAdmin &&
-								<button
-									onClick={callbacks.onEdit}
-									className="edit-button"
-								>
-									Редактировать
-								</button>
-							)}
+							{
+								// (loggedInUser?.isAdmin ||
+								// 	loggedInUser?.id === user.id)
+								user.canEdit() && (
+									// user.isAdmin &&
+									<button
+										onClick={callbacks.onEdit}
+										className="edit-button"
+									>
+										Редактировать
+									</button>
+								)
+							}
 						</SideLayout>
 						<SideLayout side="start">
 							<img src={user.avatar} alt={user.name} />

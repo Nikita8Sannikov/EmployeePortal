@@ -107,6 +107,8 @@ export default class AuthController {
                 throw new Error(`Ошибка: ${response.status}`);
             }
             const user = await response.json();
+            this._usersController.setAuthUser(user)
+            this._dispatch(setAuth(user));
             return user
         } catch (e) {
             console.error(e);

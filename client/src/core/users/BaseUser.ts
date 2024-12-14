@@ -20,5 +20,9 @@ export default class BaseUser {
     get name() {
         return this._baseUser.first_name + " " + this._baseUser.last_name
     }
+
+    canEdit() {
+        return this.isAdmin || this.id === this._baseUser._id
+    }
 }
 

@@ -1,34 +1,20 @@
-import { AppDispatch, RootState } from "../../../store";
 import React, { FC, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-	// fetchUsers,
-	increment,
-	decrement,
-} from "../../../store/reducers/users/usersSlice";
 import { useNavigate } from "react-router-dom";
-import "./userList.css";
-// import { signOut } from "../../../store/reducers/auth/authSlice";
+import { AppDispatch, RootState } from "../../../store";
+import { increment, decrement } from "../../../store/reducers/users/usersSlice";
 import SideLayout from "../../../components/sideLayout";
-// import { UsersControllerContext } from "..";
 import Spinner from "../../../components/spinner";
 import useUsers from "../../../hooks/useUsers";
 import useAuth from "../../../hooks/useAuth";
+import "./userList.css";
 
 const UsersList: FC = () => {
-	// const usersController = useContext(UsersControllerContext);
-	const usersController = useUsers();
-	const authController = useAuth();
-	// из контектса мейнкора(сделать в енм геттер ) чтобы получить контекст юзер контроллера
 	const dispatch: AppDispatch = useDispatch();
 	const navigate = useNavigate();
-	// const users = useSelector((state: RootState) => state.users.data);
+	const usersController = useUsers();
+	const authController = useAuth();
 	const me = usersController.getUser();
-	// console.log("MEEEE", me);
-
-	// const user = useSelector((state: RootState) => state.auth.user);
-	// const currentUser = user?._id;
-
 	const { page, total_pages, error, loading } = useSelector(
 		(state: RootState) => state.users
 	);
@@ -37,15 +23,10 @@ const UsersList: FC = () => {
 		usersController.fetchUsers(page);
 	}, [page]);
 
-	// useEffect(() => {
-	// 	dispatch(fetchUsers(page));
-	// }, [dispatch, page]);
-
 	const callbacks = {
 		onLogout: useCallback(() => {
-			// dispatch(signOut());
 			authController.signOut();
-		}, [dispatch]),
+		}, [authController]),
 		onShowMore: useCallback(() => {
 			dispatch(increment());
 		}, [dispatch]),
@@ -66,21 +47,9 @@ const UsersList: FC = () => {
 					<SideLayout side="between">
 						<div
 							className="user-name"
-							onClick={() =>
-								callbacks.onUserClick(
-									// usersController.authUser.id
-									// user ? user._id : ""
-									me.id
-								)
-							}
+							onClick={() => callbacks.onUserClick(me.id)}
 						>
 							{`Вы - `}
-							{/* {usersController.authUser.regName} */}
-							{/* {user?.first_name
-								? user?.first_name
-								: user?.name}{" "}
-							{user?.last_name && user?.last_name} */}
-							{/* {me.regName ? me.regName : me.name} */}
 							{me.name ? me.name : me.regName}
 						</div>
 						<button
@@ -107,27 +76,22 @@ const UsersList: FC = () => {
 				{error && <p>Ошибка: {error}</p>}
 				{usersController.users &&
 					!loading &&
-					usersController.users
-						// .filter((user) => user._id !== currentUser)
-						.map((user) => (
-							<div
-								key={user.id}
-								className="user-card"
-								onClick={() => callbacks.onUserClick(user.id)}
-							>
-								<img
-									src={user.avatar}
-									alt={user.name}
-									className="avatar"
-								/>
-								<h2 className="name">
-									{/* {user.regName ? user.regName : user.name} */}
-									{user.name.trim()
-										? user.name
-										: user.regName}
-								</h2>
-							</div>
-						))}
+					usersController.users.map((user) => (
+						<div
+							key={user.id}
+							className="user-card"
+							onClick={() => callbacks.onUserClick(user.id)}
+						>
+							<img
+								src={user.avatar}
+								alt={user.name}
+								className="avatar"
+							/>
+							<h2 className="name">
+								{user.name.trim() ? user.name : user.regName}
+							</h2>
+						</div>
+					))}
 			</div>
 			{page < total_pages ? (
 				<button onClick={callbacks.onShowMore} className="show-button">

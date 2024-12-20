@@ -1,3 +1,4 @@
+import { NavigateFunction } from 'react-router-dom';
 import { AppDispatch } from '../store';
 import { setLoading, setTotalPage } from '../store/reducers/users/usersSlice';
 import { IUser } from './../types/types';
@@ -28,27 +29,42 @@ export default class UsersController {
         return Array.from(this._users.values()).filter((user) => user.id !== this._authUserId)
     }
 
-    setAuthUser(user: IUser) {
-        this._authUserId = user._id;
-        // console.log('SET AUTH USER -> this._authUserId', this._authUserId);
+    // setAuthUser(user: IUser) {
+    //     this._authUserId = user._id;
+    //     // console.log('SET AUTH USER -> this._authUserId', this._authUserId);
 
+    //     this._users.set(user._id, (user.isAdmin ? new Admin(user) : new User(user)))
+    //     // console.log(this._users);
+
+    // }
+
+
+
+    /*
+    // // объеденит этих двух в универсальный метод (check)
+    */
+
+
+
+    // setUser(user: IUser) {
+    //     // this._authUserId = user._id;
+    //     // console.log('SET AUTH USER -> this._authUserId', this._authUserId);
+
+    //     this._users.set(user._id, (user.isAdmin ? new Admin(user) : new User(user)))
+    //     console.log(this._users);
+
+    // }
+
+    setUser(user: IUser, setAuthUser: boolean = false) {
+        if (setAuthUser) {
+            this._authUserId = user._id;
+        }
         this._users.set(user._id, (user.isAdmin ? new Admin(user) : new User(user)))
-        // console.log(this._users);
-
-    }
-
-    setUser(user: IUser) {
-        // this._authUserId = user._id;
-        // console.log('SET AUTH USER -> this._authUserId', this._authUserId);
-
-        this._users.set(user._id, (user.isAdmin ? new Admin(user) : new User(user)))
-        // console.log(this._users);
-
     }
 
 
     //возвращает мой объект пользователя(любого)
-    getUser(userId = this._authUserId) {
+    getUser(userId = this._authUserId): Admin | User {
         // console.log('getUser -> this._authUserId', this._authUserId);
         // console.log('getUser -> userId', userId);
         // console.log('ВСЕ ЮЗЕРЫ', this._users);
@@ -57,9 +73,9 @@ export default class UsersController {
             return this._users.get(userId)!
         }
         console.warn('User does not exist in UsersController');
-        return null;
+        return null as never;
         // throw new Error('User not exist')
-
+        // вместо консоль варна когда сделаю кетч еррорс можно будет сделать зис эмит еррор
     }
 
     // get authUser() {
@@ -122,5 +138,19 @@ export default class UsersController {
 
     }
 
-
+    async updateUser(form: { [key: string]: string }, id: string, navigate: NavigateFunction) {
+        const response = await fetch(`/api/users/${id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(form),
+        });
+        const data = await response.json();
+        // return response
+        if (response.ok) {
+            this.setUser(data);
+            navigate(`/profile/${id}`);
+        } else {
+            alert("Ошибка при сохранении данных");
+        }
+    }
 }

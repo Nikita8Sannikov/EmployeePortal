@@ -22,6 +22,14 @@ export default class BaseUser {
         return this._baseUser.first_name + " " + this._baseUser.last_name
     }
 
+    get first_name() {
+        return this._baseUser.first_name
+    }
+
+    get last_name() {
+        return this._baseUser.last_name
+    }
+
     get isAdmin() {
         return this._baseUser.isAdmin
     }
@@ -34,11 +42,18 @@ export default class BaseUser {
     get email() {
         return this._baseUser.email
     }
-    canEdit() {
+    get canEdit() {
         // {(loggedInUser?.isAdmin ||
         //     loggedInUser?.id === user.id)
         //здесь это прописать
         return this.isAdmin || this.id === this._baseUser._id
+    }
+
+    get soonDescription() {
+        // {user.description
+        //     ? user.description
+        //     : "Описание скоро будет добавлено "}
+        return this.description || "Описание скоро будет добавлено "
     }
 
 }

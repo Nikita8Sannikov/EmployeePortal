@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../../../store";
@@ -9,7 +9,7 @@ import useUsers from "../../../hooks/useUsers";
 import useAuth from "../../../hooks/useAuth";
 import "./userList.css";
 
-const UsersList: FC = () => {
+const UsersList = () => {
 	const dispatch: AppDispatch = useDispatch();
 	const navigate = useNavigate();
 	const usersController = useUsers();
@@ -23,20 +23,33 @@ const UsersList: FC = () => {
 		usersController.fetchUsers(page);
 	}, [page]);
 
-	const callbacks = {
-		onLogout: useCallback(() => {
+	// const callbacks = {
+	// 	onLogout: useCallback(() => {
+	// 		authController.signOut();
+	// 	}, [authController]),
+	// 	onShowMore: useCallback(() => {
+	// 		dispatch(increment());
+	// 	}, [dispatch]),
+	// 	onShowLess: useCallback(() => {
+	// 		dispatch(decrement());
+	// 	}, [dispatch]),
+	// 	onUserClick: useCallback(
+	// 		(id: string) => navigate(`/profile/${id}`),
+	// 		[navigate]
+	// 	),
+	// };
+
+	const functions = {
+		onLogout: () => {
 			authController.signOut();
-		}, [authController]),
-		onShowMore: useCallback(() => {
+		},
+		onShowMore: () => {
 			dispatch(increment());
-		}, [dispatch]),
-		onShowLess: useCallback(() => {
+		},
+		onShowLess: () => {
 			dispatch(decrement());
-		}, [dispatch]),
-		onUserClick: useCallback(
-			(id: string) => navigate(`/profile/${id}`),
-			[navigate]
-		),
+		},
+		onUserClick: (id: string) => navigate(`/profile/${id}`),
 	};
 
 	return (
@@ -46,14 +59,15 @@ const UsersList: FC = () => {
 					// !loading &&
 					<SideLayout side="between">
 						<div
+							key="228"
 							className="user-name"
-							onClick={() => callbacks.onUserClick(me.id)}
+							onClick={() => functions.onUserClick(me.id)
 						>
 							{`Вы - `}
 							{me.name ? me.name : me.regName}
 						</div>
 						<button
-							onClick={callbacks.onLogout}
+							onClick={functions.onLogout}
 							className="logout-button"
 						>
 							{/* {isMobile ? "=>" : "Выход"} */}
@@ -80,7 +94,7 @@ const UsersList: FC = () => {
 						<div
 							key={user.id}
 							className="user-card"
-							onClick={() => callbacks.onUserClick(user.id)}
+							onClick={() => functions.onUserClick(user.id)}
 						>
 							<img
 								src={user.avatar}
@@ -93,17 +107,28 @@ const UsersList: FC = () => {
 						</div>
 					))}
 			</div>
-			{page < total_pages ? (
-				<button onClick={callbacks.onShowMore} className="show-button">
+			{/* {page < total_pages ? (
+				<button onClick={functions.onShowMore} className="show-button">
 					Показать больше
 				</button>
 			) : (
-				<button onClick={callbacks.onShowLess} className="show-button">
+				<button onClick={functions.onShowLess} className="show-button">
 					Показать меньше
 				</button>
-			)}
+
+			)} */}
+			<button
+				onClick={
+					page < total_pages
+						? functions.onShowMore
+						: functions.onShowLess
+				}
+				className="show-button"
+			>
+				{page < total_pages ? "Показать больше" : "Показать меньше"}
+			</button>
 		</div>
 	);
 };
 
-export default React.memo(UsersList);
+export default UsersList;

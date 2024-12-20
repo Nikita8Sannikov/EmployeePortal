@@ -34,13 +34,19 @@ export default class AuthController {
                 body: JSON.stringify({ email, password }),
             });
             if (!response.ok) {
-                throw new Error(`Ошибка: ${response.status}`);
+                const errorData = await response.json();
+                const error = new Error(errorData.message || `Ошибка: ${response.status}`);
+                (error as any).errors = errorData.errors;
+                throw error;
+                // throw new Error(errorData.message || `Ошибка: ${response.status}`);
+                // throw new Error(`Ошибка: ${response.status}`);
             }
             const user = await response.json();
             // console.log(user);
 
             // this._authUser = user;
-            this._usersController.setAuthUser(user)
+            // this._usersController.setAuthUser(user)
+            this._usersController.setUser(user, true)
             // this._usersController.getUser()
 
             this._dispatch(setAuth(user));
@@ -54,6 +60,7 @@ export default class AuthController {
 
         } catch (e) {
             console.error(e);
+            throw e
         }
     }
 
@@ -87,12 +94,17 @@ export default class AuthController {
                 body: JSON.stringify(data),
             });
             if (!response.ok) {
-                throw new Error(`Ошибка: ${response.status}`);
+                const errorData = await response.json();
+                const error = new Error(errorData.message || `Ошибка: ${response.status}`);
+                (error as any).errors = errorData.errors;
+                throw error;
+                // throw new Error(`Ошибка: ${response.status}`);
             }
             const user = await response.json();
             return user
         } catch (e) {
             console.error(e);
+            throw e
         }
     }
 
@@ -104,10 +116,13 @@ export default class AuthController {
 
             });
             if (!response.ok) {
-                throw new Error(`Ошибка: ${response.status}`);
+                const errorData = await response.json();
+                throw new Error(errorData.message || `Ошибка: ${response.status}`);
+                // throw new Error(`Ошибка: ${response.status}`);
             }
             const user = await response.json();
-            this._usersController.setAuthUser(user)
+            // this._usersController.setAuthUser(user)
+            this._usersController.setUser(user, true)
             this._dispatch(setAuth(user));
             return user
         } catch (e) {

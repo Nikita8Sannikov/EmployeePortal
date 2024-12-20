@@ -10,6 +10,7 @@ const UserProfile = () => {
 	const usersController = useUsers();
 	const user = usersController.getUser(id);
 
+
 	// const callbacks = {
 	// 	onEdit: useCallback(() => {
 	// 		navigate(`/edit/${id}`);
@@ -57,6 +58,7 @@ const UserProfile = () => {
 							<div className="profile-title">
 								{user.name.trim() ? user.name : user.regName}
 								{/* можно вынести в класс */}
+
 								<h4>{user.role}</h4>
 							</div>
 						</SideLayout>

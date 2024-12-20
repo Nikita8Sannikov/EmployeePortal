@@ -1,5 +1,4 @@
-///точка входа которая ретернает юзерлист
-import React from "react";
+///точка входа
 import UserList from "./userList";
 
 const Users = () => {

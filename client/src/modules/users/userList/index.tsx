@@ -61,7 +61,7 @@ const UsersList = () => {
 						<div
 							key="228"
 							className="user-name"
-							onClick={() => functions.onUserClick(me.id)}
+							onClick={() => functions.onUserClick(me.id)
 						>
 							{`Вы - `}
 							{me.name ? me.name : me.regName}

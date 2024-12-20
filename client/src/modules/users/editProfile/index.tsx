@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import SideLayout from "../../../components/sideLayout";
 import useUsers from "../../../hooks/useUsers";

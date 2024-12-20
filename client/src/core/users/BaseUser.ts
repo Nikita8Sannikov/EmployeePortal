@@ -34,12 +34,11 @@ export default class BaseUser {
     get email() {
         return this._baseUser.email
     }
-
-
     canEdit() {
         // {(loggedInUser?.isAdmin ||
         //     loggedInUser?.id === user.id)
         //здесь это прописать
+        return this.isAdmin || this.id === this._baseUser._id
     }
 
 }

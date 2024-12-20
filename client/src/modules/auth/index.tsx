@@ -1,11 +1,9 @@
 import React, { useCallback, useState } from "react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store";
-import { register, signIn } from "../../store/reducers/auth/authSlice";
+import useAuth from "../../hooks/useAuth";
 import "./auth.css";
 
 const Auth: React.FC = () => {
-	const dispatch: AppDispatch = useDispatch();
+	const authController = useAuth();
 	const [form, setForm] = useState({
 		email: "",
 		password: "",
@@ -17,18 +15,16 @@ const Auth: React.FC = () => {
 
 	const callbacks = {
 		onLogin: useCallback(() => {
-			dispatch(signIn({ email: form.email, password: form.password }));
-		}, [dispatch, form.email, form.password]),
+			authController.signIn(form.email, form.password);
+		}, [form.email, form.password]),
 		onReg: useCallback(() => {
 			setForm({ email: "", password: "", name: "" });
-			dispatch(
-				register({
-					email: form.email,
-					password: form.password,
-					name: form.name,
-				})
-			);
-		}, [dispatch, form.email, form.password, form.name]),
+			authController.register({
+				email: form.email,
+				password: form.password,
+				name: form.name,
+			});
+		}, [form.email, form.password, form.name]),
 	};
 
 	return (

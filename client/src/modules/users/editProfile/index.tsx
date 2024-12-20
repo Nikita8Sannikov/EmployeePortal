@@ -1,15 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import SideLayout from "../../../components/sideLayout";
-import { RootState } from "../../../store";
-import { updateUsers } from "../../../store/reducers/users/usersSlice";
+import useUsers from "../../../hooks/useUsers";
 import "./edit.css";
 
 const EditProfile = () => {
 	const { id } = useParams();
 	const navigate = useNavigate();
-	const loggedInUser = useSelector((state: RootState) => state.auth.user);
+	const usersController = useUsers();
+	const loggedInUser = usersController.getUser();
 	const [form, setForm] = useState({
 		first_name: "",
 		last_name: "",
@@ -47,11 +46,10 @@ const EditProfile = () => {
 		});
 
 		const data = await response.json();
-		console.log(data);
 
 		if (response.ok) {
-			updateUsers(data);
-			navigate(`/profile/${id}`); // Возвращаемся на страницу профиля
+			usersController.setUser(data);
+			navigate(`/profile/${id}`);
 		} else {
 			alert("Ошибка при сохранении данных");
 		}
@@ -104,16 +102,7 @@ const EditProfile = () => {
 							value={form.description}
 							onChange={changeHandler}
 							placeholder="Описание"
-							// rows={5}
-							// cols={55}
 						/>
-						{/* <input
-							type="text"
-							name="description"
-							placeholder="Описание"
-							value={form.description}
-							onChange={changeHandler}
-						/> */}
 						<input
 							type="text"
 							name="role"

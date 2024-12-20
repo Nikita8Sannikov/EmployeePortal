@@ -1,31 +1,33 @@
-import React, { useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchUserById } from "../../../store/reducers/users/usersSlice";
 import SideLayout from "../../../components/sideLayout";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../store";
+import Spinner from "../../../components/spinner";
+import useUsers from "../../../hooks/useUsers";
 import "./userProfile.css";
 
-const UserProfile: React.FC = () => {
-	const dispatch: AppDispatch = useDispatch();
+const UserProfile = () => {
 	const navigate = useNavigate();
 	const { id } = useParams();
-	const { user } = useSelector((state: RootState) => state.users);
-	const loggedInUser = useSelector((state: RootState) => state.auth.user);
+	const usersController = useUsers();
+	const user = usersController.getUser(id);
 
-	useEffect(() => {
-		if (id) {
-			dispatch(fetchUserById(id));
-		}
-	}, [dispatch, id]);
+	// const callbacks = {
+	// 	onEdit: useCallback(() => {
+	// 		navigate(`/edit/${id}`);
+	// 	}, [navigate, id]),
+	// 	onBack: useCallback(() => {
+	// 		navigate("/");
+	// 	}, [navigate]),
+	// };
 
-	const callbacks = {
-		onEdit: useCallback(() => {
+	// Функции простые, не зависят от сложных вычеслений, поэтому принято решения убрать useCallback
+
+	const functions = {
+		onEdit: () => {
 			navigate(`/edit/${id}`);
-		}, [navigate, id]),
-		onBack: useCallback(() => {
+		},
+		onBack: () => {
 			navigate("/");
-		}, [navigate]),
+		},
 	};
 
 	return (
@@ -35,15 +37,14 @@ const UserProfile: React.FC = () => {
 					<header className="profile-header">
 						<SideLayout side="between">
 							<button
-								onClick={callbacks.onBack}
+								onClick={functions.onBack}
 								className="back-button"
 							>
 								Назад
 							</button>
-							{(loggedInUser?.isAdmin ||
-								loggedInUser?._id === user?._id) && (
+							{user.canEdit && (
 								<button
-									onClick={callbacks.onEdit}
+									onClick={functions.onEdit}
 									className="edit-button"
 								>
 									Редактировать
@@ -51,11 +52,11 @@ const UserProfile: React.FC = () => {
 							)}
 						</SideLayout>
 						<SideLayout side="start">
-							<img src={user.avatar} alt={user.first_name} />
+							<img src={user.avatar} alt={user.name} />
 
 							<div className="profile-title">
-								{user.first_name ? user.first_name : user.name}{" "}
-								{user.last_name && user.last_name}
+								{user.name.trim() ? user.name : user.regName}
+								{/* можно вынести в класс */}
 								<h4>{user.role}</h4>
 							</div>
 						</SideLayout>
@@ -65,9 +66,11 @@ const UserProfile: React.FC = () => {
 						<div className="partner-section">
 							<div className="partner-info">
 								<p>
-									{user.description
+									{user.soonDescription}
+									{/* {user.description
 										? user.description
-										: "Описание скоро будет добавлено "}
+										: "Описание скоро будет добавлено "} */}
+									{/* тоже в класс геттером (check) */}
 								</p>
 							</div>
 						</div>
@@ -78,10 +81,12 @@ const UserProfile: React.FC = () => {
 					</section>
 				</>
 			) : (
-				<p>Загрузка...</p>
+				<Spinner />
 			)}
 		</div>
 	);
 };
 
-export default React.memo(UserProfile);
+// Так же мемоизация компонента здесь будет избыточна так как UserProfile использует useParams и useUsers, а не получает пропсы. Его рендеринг зависит только от внутренних данных
+// export default React.memo(UserProfile);
+export default UserProfile;

@@ -1,69 +1,80 @@
-import { AppDispatch, RootState } from "../../../store";
-import React, { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-	fetchUsers,
-	increment,
-	decrement,
-} from "../../../store/reducers/users/usersSlice";
 import { useNavigate } from "react-router-dom";
-import "./userList.css";
-import { signOut } from "../../../store/reducers/auth/authSlice";
+import { AppDispatch, RootState } from "../../../store";
+import { increment, decrement } from "../../../store/reducers/users/usersSlice";
 import SideLayout from "../../../components/sideLayout";
+import Spinner from "../../../components/spinner";
+import useUsers from "../../../hooks/useUsers";
+import useAuth from "../../../hooks/useAuth";
+import "./userList.css";
 
-const UsersList: React.FC = () => {
+const UsersList = () => {
 	const dispatch: AppDispatch = useDispatch();
 	const navigate = useNavigate();
-	const users = useSelector((state: RootState) => state.users.data);
-	const user = useSelector((state: RootState) => state.auth.user);
-	const currentUser = user?._id;
-
-	const { page, total_pages, error } = useSelector(
+	const usersController = useUsers();
+	const authController = useAuth();
+	const me = usersController.getUser();
+	const { page, total_pages, error, loading } = useSelector(
 		(state: RootState) => state.users
 	);
 
 	useEffect(() => {
-		dispatch(fetchUsers(page));
-	}, [dispatch, page]);
+		usersController.fetchUsers(page);
+	}, [page]);
 
-	const callbacks = {
-		onLogout: useCallback(() => {
-			dispatch(signOut());
-		}, [dispatch]),
-		onShowMore: useCallback(() => {
+	// const callbacks = {
+	// 	onLogout: useCallback(() => {
+	// 		authController.signOut();
+	// 	}, [authController]),
+	// 	onShowMore: useCallback(() => {
+	// 		dispatch(increment());
+	// 	}, [dispatch]),
+	// 	onShowLess: useCallback(() => {
+	// 		dispatch(decrement());
+	// 	}, [dispatch]),
+	// 	onUserClick: useCallback(
+	// 		(id: string) => navigate(`/profile/${id}`),
+	// 		[navigate]
+	// 	),
+	// };
+
+	const functions = {
+		onLogout: () => {
+			authController.signOut();
+		},
+		onShowMore: () => {
 			dispatch(increment());
-		}, [dispatch]),
-		onShowLess: useCallback(() => {
+		},
+		onShowLess: () => {
 			dispatch(decrement());
-		}, [dispatch]),
-		onUserClick: useCallback(
-			(id: string) => navigate(`/profile/${id}`),
-			[navigate]
-		),
+		},
+		onUserClick: (id: string) => navigate(`/profile/${id}`),
 	};
 
 	return (
 		<div className="user-list-container">
 			<header className="user-list-header">
-				<SideLayout side="between">
-					<div
-						className="user-name"
-						onClick={() =>
-							callbacks.onUserClick(user ? user?._id : "")
-						}
-					>
-						{`Вы - `}
-						{user?.first_name ? user?.first_name : user?.name}{" "}
-						{user?.last_name && user?.last_name}
-					</div>
-					<button
-						onClick={callbacks.onLogout}
-						className="logout-button"
-					>
-						{/* {isMobile ? "=>" : "Выход"} */}
-						Выход
-					</button>
-				</SideLayout>
+				{me && (
+					// !loading &&
+					<SideLayout side="between">
+						<div
+							key="228"
+							className="user-name"
+							onClick={() => functions.onUserClick(me.id)}
+						>
+							{`Вы - `}
+							{me.name ? me.name : me.regName}
+						</div>
+						<button
+							onClick={functions.onLogout}
+							className="logout-button"
+						>
+							{/* {isMobile ? "=>" : "Выход"} */}
+							Выход
+						</button>
+					</SideLayout>
+				)}
 
 				<h1 className="title">Наша команда</h1>
 
@@ -73,39 +84,51 @@ const UsersList: React.FC = () => {
 					выход из любых, даже самых сложных ситуаций.
 				</div>
 			</header>
+
 			<div className="user-cards">
+				{loading && <Spinner />}
 				{error && <p>Ошибка: {error}</p>}
-				{users &&
-					users
-						.filter((user) => user._id !== currentUser)
-						.map((user) => (
-							<div
-								key={user._id}
-								className="user-card"
-								onClick={() => callbacks.onUserClick(user._id)}
-							>
-								<img
-									src={user.avatar}
-									alt={`${user.first_name} ${user.last_name}`}
-									className="avatar"
-								/>
-								<h2 className="name">
-									{user.first_name} {user.last_name}
-								</h2>
-							</div>
-						))}
+				{usersController.users &&
+					!loading &&
+					usersController.users.map((user) => (
+						<div
+							key={user.id}
+							className="user-card"
+							onClick={() => functions.onUserClick(user.id)}
+						>
+							<img
+								src={user.avatar}
+								alt={user.name}
+								className="avatar"
+							/>
+							<h2 className="name">
+								{user.name.trim() ? user.name : user.regName}
+							</h2>
+						</div>
+					))}
 			</div>
-			{page < total_pages ? (
-				<button onClick={callbacks.onShowMore} className="show-button">
+			{/* {page < total_pages ? (
+				<button onClick={functions.onShowMore} className="show-button">
 					Показать больше
 				</button>
 			) : (
-				<button onClick={callbacks.onShowLess} className="show-button">
+				<button onClick={functions.onShowLess} className="show-button">
 					Показать меньше
 				</button>
-			)}
+
+			)} */}
+			<button
+				onClick={
+					page < total_pages
+						? functions.onShowMore
+						: functions.onShowLess
+				}
+				className="show-button"
+			>
+				{page < total_pages ? "Показать больше" : "Показать меньше"}
+			</button>
 		</div>
 	);
 };
 
-export default React.memo(UsersList);
+export default UsersList;

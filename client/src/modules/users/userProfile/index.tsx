@@ -9,7 +9,7 @@ const UserProfile = () => {
 	const { id } = useParams();
 	const usersController = useUsers();
 	const user = usersController.getUser(id);
-
+	const loggedInUser = usersController.getUser();
 
 	// const callbacks = {
 	// 	onEdit: useCallback(() => {
@@ -43,7 +43,7 @@ const UserProfile = () => {
 							>
 								Назад
 							</button>
-							{user.canEdit && (
+							{loggedInUser.canEdit && (
 								<button
 									onClick={functions.onEdit}
 									className="edit-button"

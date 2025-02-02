@@ -43,7 +43,8 @@ const UserProfile = () => {
 							>
 								Назад
 							</button>
-							{loggedInUser.canEdit && (
+							{
+							loggedInUser.canEdit(user.id) && (
 								<button
 									onClick={functions.onEdit}
 									className="edit-button"
@@ -56,9 +57,7 @@ const UserProfile = () => {
 							<img src={user.avatar} alt={user.name} />
 
 							<div className="profile-title">
-								{user.name.trim() ? user.name : user.regName}
-								{/* можно вынести в класс */}
-
+								{user.profileTitleName}
 								<h4>{user.role}</h4>
 							</div>
 						</SideLayout>
@@ -69,10 +68,6 @@ const UserProfile = () => {
 							<div className="partner-info">
 								<p>
 									{user.soonDescription}
-									{/* {user.description
-										? user.description
-										: "Описание скоро будет добавлено "} */}
-									{/* тоже в класс геттером (check) */}
 								</p>
 							</div>
 						</div>

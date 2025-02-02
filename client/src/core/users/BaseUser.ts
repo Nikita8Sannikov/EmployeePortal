@@ -1,9 +1,18 @@
 import { IUser } from "../../types/types";
+// import { eventBus } from "../EventBus";
 
 export default class BaseUser {
+    // private _loggedInUser: IUser | null = null;
     constructor(private readonly _baseUser: IUser) {
-
+        // eventBus.on('loggedInUser', (user: IUser) => {
+        //     this._loggedInUser = user;
+        //     console.log('User profile loaded:', this.loggedInUser);
+        // })
     }
+
+    // get loggedInUser() {
+    //     return this._loggedInUser;
+    // }
 
     get id() {
         return this._baseUser._id
@@ -42,19 +51,15 @@ export default class BaseUser {
     get email() {
         return this._baseUser.email
     }
-    get canEdit() {
-        // {(loggedInUser?.isAdmin ||
-        //     loggedInUser?.id === user.id)
-        //здесь это прописать
-        return this.isAdmin || this.id === this._baseUser._id
+    canEdit(id: string) {
+        return this.isAdmin || id === this._baseUser._id
     }
 
     get soonDescription() {
-        // {user.description
-        //     ? user.description
-        //     : "Описание скоро будет добавлено "}
         return this.description || "Описание скоро будет добавлено "
     }
 
+    get profileTitleName() {
+        return this.name.trim() ? this.name : this.regName
+    }
 }
-

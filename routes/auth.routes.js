@@ -106,6 +106,8 @@ router.post(
 				last_name: user.last_name,
 				avatar: user.avatar,
 				isAdmin: user.isAdmin,
+				description: user.description,
+				role: user.role,
 			});
 		} catch (e) {
 			res.status(500).json({ message: "Smth wrong, try again" });

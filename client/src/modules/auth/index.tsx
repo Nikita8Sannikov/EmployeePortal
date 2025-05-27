@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import "./auth.css";
 
@@ -9,23 +9,24 @@ const Auth: React.FC = () => {
 		password: "",
 		name: "",
 	});
+
 	const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setForm({ ...form, [event.target.name]: event.target.value });
 	};
-
+	//сделать класс кетчЕррорс
 	const callbacks = {
-		onLogin: useCallback(() => {
-			authController.signIn(form.email, form.password);
-		}, [form.email, form.password]),
-		onReg: useCallback(() => {
-			setForm({ email: "", password: "", name: "" });
-			authController.register({
+		onLogin: async () => {
+			await authController.signIn(form.email, form.password);
+		},
+
+		onReg: async () => {
+			await authController.register({
 				email: form.email,
 				password: form.password,
 				name: form.name,
 			});
-		}, [form.email, form.password, form.name]),
-	};
+		}
+	}
 
 	return (
 		<div className="auth-form">

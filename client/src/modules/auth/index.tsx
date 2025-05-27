@@ -9,7 +9,6 @@ const Auth: React.FC = () => {
 		password: "",
 		name: "",
 	});
-
 	const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setForm({ ...form, [event.target.name]: event.target.value });
 	};

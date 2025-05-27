@@ -21,6 +21,7 @@ export default class AuthController {
             return user;
         } catch (e) {
             console.error(e);
+            throw e
         }
     }
 
@@ -35,6 +36,7 @@ export default class AuthController {
             return await this._apiClient.post('/api/auth/register', data);
         } catch (e) {
             console.error(e);
+            throw e
         }
     }
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import SideLayout from "../../../components/sideLayout";
 import useUsers from "../../../hooks/useUsers";
@@ -9,63 +9,88 @@ const EditProfile = () => {
 	const navigate = useNavigate();
 	const usersController = useUsers();
 	const loggedInUser = usersController.getUser();
+	const user = usersController.getUser(id);
 	const [form, setForm] = useState({
-		first_name: "",
-		last_name: "",
-		avatar: "",
-		description: "",
-		role: "user",
+		first_name: user.first_name,
+		last_name: user.last_name,
+		avatar: user.avatar,
+		description: user.description,
+		role: user.role || "user",
 	});
 	const changeHandler = (
 		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
 	) => {
 		setForm({ ...form, [event.target.name]: event.target.value });
 	};
+	//
+	// useEffect(() => {
+	// 	const fetchUser = async () => {
+	// 		const response = await fetch(`/api/users/${id}`);
+	// 		const data = await response.json();
+	// 		setForm({
+	// 			first_name: data.first_name,
+	// 			last_name: data.last_name,
+	// 			avatar: data.avatar,
+	// 			description: data.description,
+	// 			role: data.role,
+	// 		});
+	// 	};
+	// 	fetchUser();
+	// }, [id]);
+
+	// могу перенести все из юхЭффекта в классс ЮзерсКУонтроллер
+	// данные все есть могу заполнить все формы напрямую из юзер контроллер и useEffect этот не нужен  (check)
+
+	/*
+	const user = usersController.getUser(id);
 
 	useEffect(() => {
-		const fetchUser = async () => {
-			const response = await fetch(`/api/users/${id}`);
-			const data = await response.json();
-			setForm({
-				first_name: data.first_name,
-				last_name: data.last_name,
-				avatar: data.avatar,
-				description: data.description,
-				role: data.role,
-			});
-		};
-		fetchUser();
-	}, [id]);
-
+		setForm({
+			first_name: user.first_name,
+			last_name: user.last_name,
+			avatar: user.avatar,
+			description: user.description,
+			role: user.role,
+		});
+	}, [user]);
+*/
 	const handleSave = async (e: React.FormEvent) => {
 		e.preventDefault();
-		const response = await fetch(`/api/users/${id}`, {
-			method: "PATCH",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(form),
-		});
+		// const response = await fetch(`/api/users/${id}`, {
+		// 	method: "PATCH",
+		// 	headers: { "Content-Type": "application/json" },
+		// 	body: JSON.stringify(form),
+		// });
 
-		const data = await response.json();
+		// вынести фетч  да и сам метод вынести в юзерс коннтроллер
+		// оставить только превент дефолт
+		await usersController.updateUser(form, id!, navigate);
+		// const data = await response.json();
 
-		if (response.ok) {
-			usersController.setUser(data);
-			navigate(`/profile/${id}`);
-		} else {
-			alert("Ошибка при сохранении данных");
-		}
+		// if (response.ok) {
+		// 	usersController.setUser(data);
+		// 	navigate(`/profile/${id}`);
+		// } else {
+		// 	alert("Ошибка при сохранении данных");
+		// }
 	};
 
-	const callbacks = {
-		onBack: useCallback(() => {
+	// const callbacks = {
+	// 	onBack: useCallback(() => {
+	// 		navigate("/");
+	// 	}, [navigate]),
+	// };
+	const functions = {
+		onBack: () => {
 			navigate("/");
-		}, [navigate]),
+		},
 	};
 
 	return (
 		<div className="edit-container">
 			<div className="edit-container-header">
 				<SideLayout side="between">
-					<button onClick={callbacks.onBack} className="back-button">
+					<button onClick={functions.onBack} className="back-button">
 						Назад
 					</button>
 				</SideLayout>
@@ -95,7 +120,7 @@ const EditProfile = () => {
 					value={form.avatar}
 					onChange={changeHandler}
 				/>
-				{loggedInUser?.isAdmin && (
+				{loggedInUser.isAdmin && (
 					<>
 						<textarea
 							name="description"

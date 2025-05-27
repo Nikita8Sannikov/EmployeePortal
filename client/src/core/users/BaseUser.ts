@@ -2,7 +2,6 @@ import { IUser } from "../../types/types";
 
 export default class BaseUser {
     constructor(private readonly _baseUser: IUser) {
-
     }
 
     get id() {
@@ -14,12 +13,19 @@ export default class BaseUser {
     }
 
     get regName() {
-        // return this.name || this._baseUser.name
         return this._baseUser.name
     }
 
     get name() {
         return this._baseUser.first_name + " " + this._baseUser.last_name
+    }
+
+    get first_name() {
+        return this._baseUser.first_name
+    }
+
+    get last_name() {
+        return this._baseUser.last_name
     }
 
     get isAdmin() {
@@ -34,12 +40,15 @@ export default class BaseUser {
     get email() {
         return this._baseUser.email
     }
-    canEdit() {
-        // {(loggedInUser?.isAdmin ||
-        //     loggedInUser?.id === user.id)
-        //здесь это прописать
-        return this.isAdmin || this.id === this._baseUser._id
+    canEdit(id: string) {
+        return this.isAdmin || id === this._baseUser._id
     }
 
-}
+    get soonDescription() {
+        return this.description || "Описание скоро будет добавлено "
+    }
 
+    get profileTitleName() {
+        return this.name.trim() ? this.name : this.regName
+    }
+}

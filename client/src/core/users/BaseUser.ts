@@ -1,18 +1,8 @@
 import { IUser } from "../../types/types";
-// import { eventBus } from "../EventBus";
 
 export default class BaseUser {
-    // private _loggedInUser: IUser | null = null;
     constructor(private readonly _baseUser: IUser) {
-        // eventBus.on('loggedInUser', (user: IUser) => {
-        //     this._loggedInUser = user;
-        //     console.log('User profile loaded:', this.loggedInUser);
-        // })
     }
-
-    // get loggedInUser() {
-    //     return this._loggedInUser;
-    // }
 
     get id() {
         return this._baseUser._id
@@ -23,7 +13,6 @@ export default class BaseUser {
     }
 
     get regName() {
-        // return this.name || this._baseUser.name
         return this._baseUser.name
     }
 

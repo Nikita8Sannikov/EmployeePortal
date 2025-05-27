@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import "./auth.css";
 
@@ -9,61 +9,23 @@ const Auth: React.FC = () => {
 		password: "",
 		name: "",
 	});
-	const [error, setError] = useState<string | null>(null);
-
-	const [validationError, setValidationError] = useState<{ msg: string }[]>(
-		[]
-	);
 	const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setForm({ ...form, [event.target.name]: event.target.value });
 	};
 	//сделать класс кетчЕррорс
 	const callbacks = {
-		onLogin: useCallback(async () => {
-			try {
-				setError(null);
-				setValidationError([]);
-				await authController.signIn(form.email, form.password);
-			} catch (e: Error | any) {
-				console.error("Ошибка при входе:", e);
-				if (e.errors) {
-					console.error("Ошибки валидации:", e.errors[0].msg);
-					e.errors.forEach((err: any) => {
-						console.error(
-							`Ошибка в поле "${err.path}": ${err.msg}`
-						);
-					});
-					setValidationError(e.errors || []);
-				}
-				// setError(e.errors[0].msg ? e.errors[0].msg : e.message);
-				setError(e.message);
-			}
-		}, [form.email, form.password]),
-		onReg: useCallback(async () => {
-			try {
-				setError(null);
-				setValidationError([]);
-				setForm({ email: "", password: "", name: "" });
-				await authController.register({
-					email: form.email,
-					password: form.password,
-					name: form.name,
-				});
-			} catch (e: Error | any) {
-				console.error("Ошибка при регистрации:", e);
-				if (e.errors) {
-					e.errors.forEach((err: any) => {
-						console.error(
-							`Ошибка в поле "${err.path}": ${err.msg}`
-						);
-					});
+		onLogin: async () => {
+			await authController.signIn(form.email, form.password);
+		},
 
-					setValidationError(e.errors || []);
-				}
-				setError(e.message);
-			}
-		}, [form.email, form.password, form.name]),
-	};
+		onReg: async () => {
+			await authController.register({
+				email: form.email,
+				password: form.password,
+				name: form.name,
+			});
+		}
+	}
 
 	return (
 		<div className="auth-form">
@@ -117,19 +79,6 @@ const Auth: React.FC = () => {
 								/>
 							</div>
 						</div>
-						{validationError.length > 0 ? (
-							<div className="error-message">
-								<ul>
-									{validationError.map((valEr, index) => (
-										<li key={index}>{valEr.msg}</li>
-									))}
-								</ul>
-							</div>
-						) : (
-							error && (
-								<div className="error-message">{error}</div>
-							)
-						)}
 					</div>
 					<div className="card-action">
 						<button className="btn" onClick={callbacks.onLogin}>

@@ -47,7 +47,7 @@ const UsersList: FC = () => {
 					<SideLayout side="between">
 						<div
 							className="user-name"
-							onClick={() => callbacks.onUserClick(me.id)}
+							onClick={() => functions.onUserClick(me.id)}
 						>
 							{`Вы - `}
 							{me.name ? me.name : me.regName}

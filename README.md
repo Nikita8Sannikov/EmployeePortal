@@ -1,8 +1,14 @@
 # Employee Portal
 
-A fullstack employee directory application where users can create accounts, browse employees, view profiles and manage their own profile information.
+A fullstack employee directory application built with **React, TypeScript, Node.js, Express and MongoDB**.
 
-The project includes a **React + TypeScript frontend** and a **Node.js / Express / MongoDB backend** with authentication and user management.
+Users can create accounts, authenticate, browse other employees, view profiles and edit their own profile information.
+
+## Project Status
+
+The application is currently intended for local development.
+
+A public deployment is not available yet.
 
 ## Features
 
@@ -13,22 +19,57 @@ The project includes a **React + TypeScript frontend** and a **Node.js / Express
 - JWT-based authentication
 - JWT stored in an `httpOnly` cookie
 - Password hashing with bcrypt
-- Registration and login validation
-- Current-user endpoint
+- Input validation with `express-validator`
+- Session restoration through `/api/auth/me`
+- Authentication state managed with Redux Toolkit
 
 ### Employee Directory
 
-- Employee list
-- Server-side pagination
+- Paginated employee list
+- Authenticated user excluded from the employee list
 - Individual employee profiles
-- Profile information including:
+- Profile editing
+- User and admin roles
+- Employee information:
   - first name
   - last name
   - avatar
   - description
   - role
-- Profile editing
-- Admin flag support
+
+### Frontend Architecture
+
+The frontend contains a separate application core responsible for communication with the API and domain logic.
+
+```text
+React UI
+   ↓
+Custom Hooks
+   ↓
+Controllers
+   ↓
+ApiClient
+   ↓
+Express API
+```
+
+The core includes:
+
+- `ApiClient` — centralized HTTP client
+- `AuthController` — authentication logic
+- `UsersController` — employee state and API operations
+- `CatchErrors` — centralized HTTP/network error handling
+- `MainCore` — initializes and connects application services
+
+User entities are represented with a small class hierarchy:
+
+```text
+BaseUser
+├── User
+└── Admin
+```
+
+This keeps API communication and business logic separated from React components.
 
 ## Tech Stack
 
@@ -53,64 +94,84 @@ The project includes a **React + TypeScript frontend** and a **Node.js / Express
 - express-validator
 - cookie-parser
 
+### Testing Setup
+
+- Vitest
+- React Testing Library
+- jest-dom
+- jsdom
+
+The testing environment is configured, but automated test coverage is still planned.
+
 ## Architecture
 
 ```text
-┌─────────────────────┐
-│   React / Vite UI   │
-│     TypeScript      │
-└──────────┬──────────┘
-           │
-           │ HTTP API
-           ▼
-┌─────────────────────┐
-│   Express Server    │
-├─────────────────────┤
-│ Authentication      │
-│ Users API           │
-│ Validation          │
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐
-│ MongoDB / Mongoose  │
-└─────────────────────┘
+┌───────────────────────────┐
+│        React UI           │
+│       TypeScript          │
+└─────────────┬─────────────┘
+              │
+              ▼
+┌───────────────────────────┐
+│      Application Core     │
+│                           │
+│  AuthController           │
+│  UsersController          │
+│  ApiClient                │
+│  CatchErrors              │
+└─────────────┬─────────────┘
+              │
+              │ HTTP
+              ▼
+┌───────────────────────────┐
+│       Express API         │
+│                           │
+│  /api/auth                │
+│  /api/users               │
+│  validation / cookies     │
+└─────────────┬─────────────┘
+              │
+              ▼
+┌───────────────────────────┐
+│     MongoDB / Mongoose    │
+└───────────────────────────┘
 ```
 
 ## Authentication Flow
 
 ```text
-Registration
-    ↓
-Validate credentials
-    ↓
+Register
+   ↓
+Validate input
+   ↓
 Hash password with bcrypt
-    ↓
+   ↓
 Store user in MongoDB
-
-
-Login
-    ↓
-Validate credentials
-    ↓
-Compare password hash
-    ↓
-Create JWT
-    ↓
-Store token in httpOnly cookie
-    ↓
-Authenticated session
 ```
-
-The authentication cookie is configured as:
 
 ```text
-httpOnly
-secure
-SameSite=None
+Login
+   ↓
+Validate credentials
+   ↓
+Compare password hash
+   ↓
+Create JWT
+   ↓
+Set httpOnly cookie
+   ↓
+Restore authenticated user
 ```
 
-The token expires after one hour.
+The authentication cookie is configured with:
+
+```text
+httpOnly: true
+secure: true
+sameSite: none
+```
+
+JWT tokens expire after one hour.
 
 ## API
 
@@ -126,48 +187,71 @@ GET  /api/auth/me
 ### Users
 
 ```text
-GET   /api/users/userlist
+POST  /api/users/userlist
 GET   /api/users/:id
 PATCH /api/users/:id
 ```
 
-### Pagination
+### Employee Pagination
 
-The employee list supports server-side pagination:
+The employee list is loaded page by page.
 
-```http
-GET /api/users/userlist?page=1&per_page=4
-```
-
-Example response structure:
+Example request:
 
 ```json
 {
   "page": 1,
-  "per_page": 4,
+  "perPage": 5,
+  "authUserId": "..."
+}
+```
+
+The authenticated employee is excluded from the result.
+
+Example response:
+
+```json
+{
+  "page": 1,
+  "per_page": 5,
   "total": 12,
   "total_pages": 3,
   "data": []
 }
 ```
 
+## Error Handling
+
+The frontend uses a centralized API and error-handling layer.
+
+`ApiClient` converts unsuccessful HTTP responses into application errors, while `CatchErrors` handles:
+
+- `400` — bad requests
+- `401` — unauthorized requests
+- `403` — forbidden requests
+- `404` — missing resources
+- `500` — server errors
+- network errors
+- request timeout errors
+
+Authentication state can be cleared automatically when authorization errors occur.
+
 ## User Model
 
-A user can contain:
-
 ```text
-email
-password
-name
-first_name
-last_name
-avatar
-isAdmin
-description
-role
+User
+├── email
+├── password
+├── name
+├── first_name
+├── last_name
+├── avatar
+├── isAdmin
+├── description
+└── role
 ```
 
-Email addresses are unique and passwords are stored as hashes rather than plaintext.
+Email addresses are unique and passwords are stored as bcrypt hashes.
 
 ## Project Structure
 
@@ -176,12 +260,23 @@ Email addresses are unique and passwords are stored as hashes rather than plaint
 ├── client/
 │   └── src/
 │       ├── components/
+│       ├── core/
+│       │   ├── ApiClient.ts
+│       │   ├── AuthController.ts
+│       │   ├── UsersController.ts
+│       │   ├── MainCore.ts
+│       │   ├── CatchErrors.ts
+│       │   └── users/
+│       ├── hooks/
 │       ├── modules/
 │       │   ├── auth/
 │       │   └── users/
+│       │       ├── userList/
+│       │       ├── userProfile/
+│       │       └── editProfile/
+│       ├── service/
 │       ├── store/
-│       ├── types/
-│       └── routes.tsx
+│       └── types/
 │
 ├── models/
 │   └── User.js
@@ -202,20 +297,20 @@ Email addresses are unique and passwords are stored as hashes rather than plaint
 - npm
 - MongoDB
 
-### Clone
+### Clone the repository
 
 ```bash
-git clone https://github.com/Nikita8Sannikov/EmployeePortal.git
+git clone -b develop https://github.com/Nikita8Sannikov/EmployeePortal.git
 cd EmployeePortal
 ```
 
-### Install Backend Dependencies
+### Install backend dependencies
 
 ```bash
 npm install
 ```
 
-### Install Frontend Dependencies
+### Install frontend dependencies
 
 ```bash
 cd client
@@ -225,17 +320,15 @@ cd ..
 
 ### Configuration
 
-The server expects configuration values for:
+The backend expects the following configuration values:
 
 ```text
-MongoDB connection URI
-JWT secret
-Server port
+mongoUri
+jwtSecret
+port
 ```
 
-### Run Development Environment
-
-The project can run the backend and frontend together:
+### Run frontend and backend together
 
 ```bash
 npm run dev
@@ -248,26 +341,26 @@ npm run server
 npm run client
 ```
 
-## Frontend Build
+## Frontend Scripts
 
 ```bash
 cd client
+
+npm run start
 npm run build
+npm run lint
+npm run test
+npm run test:ui
 ```
 
-## Main Backend Responsibilities
+## Roadmap
 
-The backend handles:
-
-- user registration and authentication;
-- credential validation;
-- password hashing;
-- JWT creation and verification;
-- cookie-based authentication;
-- MongoDB persistence;
-- employee pagination;
-- retrieving individual profiles;
-- updating profile data.
+- [ ] Add automated test coverage
+- [ ] Add Docker configuration
+- [ ] Add CI pipeline
+- [ ] Deploy frontend and backend
+- [ ] Improve API authorization middleware
+- [ ] Expand role-based access control
 
 ## Author
 

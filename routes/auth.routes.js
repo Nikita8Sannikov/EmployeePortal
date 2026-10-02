@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import config from "config";
 import { check, validationResult } from "express-validator";
 import User from "../models/User.js";
+import { authCookie, clearAuthCookie, requireAuth } from "../middleware/auth.js";
+import { toPublicUser } from "../utils/publicUser.js";
 
 const router = Router();
 const jwtSecret = config.get("jwtSecret");
@@ -29,7 +31,6 @@ router.post(
 			}
 
 			const { email, password, name } = req.body;
-			console.log(email, password, name);
 
 			const candidate = await User.findOne({ email });
 
@@ -92,23 +93,8 @@ router.post(
 			const token = jwt.sign({ userId: user.id }, jwtSecret, {
 				expiresIn: "1h",
 			});
-			res.cookie("auth_token", token, {
-				httpOnly: true,
-				sameSite: "none",
-				secure: true,
-				maxAge: 3600000,
-			});
-			res.status(200).json({
-				_id: user.id,
-				email: user.email,
-				name: user.name,
-				first_name: user.first_name,
-				last_name: user.last_name,
-				avatar: user.avatar,
-				isAdmin: user.isAdmin,
-				description: user.description,
-				role: user.role,
-			});
+			res.cookie("auth_token", token, authCookie);
+			res.status(200).json(toPublicUser(user));
 		} catch (e) {
 			res.status(500).json({ message: "Smth wrong, try again" });
 		}
@@ -118,11 +104,7 @@ router.post(
 // /api/auth/logout
 router.post("/logout", async (req, res) => {
 	try {
-		res.clearCookie("auth_token", {
-			httpOnly: true,
-			sameSite: "none",
-			secure: true,
-		});
+		clearAuthCookie(res);
 		res.status(200).json({ message: "Logout successful" });
 	} catch (e) {
 		res.status(500).json({ message: "Smth wrong, try again" });
@@ -130,31 +112,8 @@ router.post("/logout", async (req, res) => {
 });
 
 // /api/auth/me
-router.get("/me", async (req, res) => {
-	try {
-		// const token = req.headers.authorization?.split(" ")[1];
-		const token = req.cookies.auth_token;
-		if (!token) {
-			return res.status(401).json({ message: "No token provided" });
-		}
-
-		const decoded = jwt.verify(token, jwtSecret);
-		const userId = decoded.userId;
-
-		const user = await User.findById(userId);
-
-		if (!user) {
-			return res.status(404).json({ message: "User not found" });
-		}
-
-		res.status(200).json(user);
-	} catch (e) {
-		console.error("Error in /me:", e);
-		res.status(500).json({
-			message: "Smth wrong, try again",
-			error: e.message,
-		});
-	}
+router.get("/me", requireAuth, (req, res) => {
+	res.status(200).json(toPublicUser(req.authUser));
 });
 
 export default router;

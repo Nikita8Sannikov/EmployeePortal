@@ -5,11 +5,13 @@ import {
 
 interface LoginState {
     error: string | null,
+    notice: string | null,
     isAuth: boolean,
     status: "idle" | "loading" | "succeeded" | "failed"
 }
 const initialState: LoginState = {
     error: null,
+    notice: null,
     isAuth: false,
     status: "loading",
 }
@@ -28,12 +30,15 @@ const authSlice = createSlice({
         },
         setError(state, action: PayloadAction<string | null>) {
             state.error = action.payload;
+        },
+        setNotice(state, action: PayloadAction<string | null>) {
+            state.notice = action.payload;
         }
     },
     
 })
 
 
-export const { setAuth, clearAuth, setError } = authSlice.actions
+export const { setAuth, clearAuth, setError, setNotice } = authSlice.actions
 
 export default authSlice.reducer

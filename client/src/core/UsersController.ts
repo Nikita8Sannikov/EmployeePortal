@@ -1,5 +1,6 @@
 import { NavigateFunction } from 'react-router-dom';
 import { AppDispatch } from '../store';
+import { setNotice } from '../store/reducers/auth/authSlice';
 import { setLoading, setTotalPage } from '../store/reducers/users/usersSlice';
 import { IUser } from './../types/types';
 import { ApiClient } from './ApiClient';
@@ -38,7 +39,7 @@ export default class UsersController {
     async fetchUsers(page: number) {
         try {
             this._dispatch(setLoading(true))
-            const result = await this._apiClient.post('/api/users/userlist', { page, authUserId: this._authUserId });
+            const result = await this._apiClient.post('/api/users/userlist', { page });
             if (page === 1) {
                 const me = this._users.get(this._authUserId);
                 this._users.clear();
@@ -67,13 +68,12 @@ export default class UsersController {
     }
 
     async updateUser(form: { [key: string]: string }, id: string, navigate: NavigateFunction) {
-        const response = await this._apiClient.patch(`/api/users/${id}`, form);
-        const data = await response.json();
-        // return response
-        if (response.ok) {
+        try {
+            const data = await this._apiClient.patch(`/api/users/${id}`, form);
             this.setUser(data);
+            this._dispatch(setNotice("Сохранено"));
             navigate(`/profile/${id}`);
-        } else {
+        } catch {
             alert("Ошибка при сохранении данных");
         }
     }

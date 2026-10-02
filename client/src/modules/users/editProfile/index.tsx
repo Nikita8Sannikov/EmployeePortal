@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import SideLayout from "../../../components/sideLayout";
 import useUsers from "../../../hooks/useUsers";
 import "./edit.css";
@@ -10,12 +10,13 @@ const EditProfile = () => {
 	const usersController = useUsers();
 	const loggedInUser = usersController.getUser();
 	const user = usersController.getUser(id);
+	const allowed = Boolean(user && loggedInUser?.canEdit(user.id));
 	const [form, setForm] = useState({
-		first_name: user.first_name,
-		last_name: user.last_name,
-		avatar: user.avatar,
-		description: user.description,
-		role: user.role || "user",
+		first_name: user?.first_name ?? "",
+		last_name: user?.last_name ?? "",
+		avatar: user?.avatar ?? "",
+		description: user?.description ?? "",
+		role: user?.role || "user",
 	});
 	const changeHandler = (
 		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -86,6 +87,10 @@ const EditProfile = () => {
 		},
 	};
 
+	if (!allowed) {
+		return <Navigate to="/list" />;
+	}
+
 	return (
 		<div className="edit-container">
 			<div className="edit-container-header">
@@ -120,7 +125,7 @@ const EditProfile = () => {
 					value={form.avatar}
 					onChange={changeHandler}
 				/>
-				{loggedInUser.isAdmin && (
+				{loggedInUser?.isAdmin && (
 					<>
 						<textarea
 							name="description"

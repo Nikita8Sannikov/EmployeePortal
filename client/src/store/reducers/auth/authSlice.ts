@@ -11,7 +11,7 @@ interface LoginState {
 const initialState: LoginState = {
     error: null,
     isAuth: false,
-    status: "idle",
+    status: "loading",
 }
 
 const authSlice = createSlice({
@@ -20,11 +20,11 @@ const authSlice = createSlice({
     reducers: {
         setAuth(state) {
             state.isAuth = true;
-
+            state.status = "succeeded";
         },
         clearAuth(state) {
             state.isAuth = false;
-
+            state.status = "idle";
         },
         setError(state, action: PayloadAction<string | null>) {
             state.error = action.payload;

@@ -38,7 +38,7 @@ export default class UsersController {
     async fetchUsers(page: number) {
         try {
             this._dispatch(setLoading(true))
-            const result = await this._apiClient.post('/api/users/userlist', { page, authUserId: this._authUserId });
+            const result = await this._apiClient.post('/api/users/userlist', { page });
             if (page === 1) {
                 const me = this._users.get(this._authUserId);
                 this._users.clear();

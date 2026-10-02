@@ -48,6 +48,7 @@ export default class AuthController {
             this._dispatch(setAuth(user));
             return user;
         } catch (e) {
+            this._dispatch(clearAuth());
             console.error(e);
         }
     }

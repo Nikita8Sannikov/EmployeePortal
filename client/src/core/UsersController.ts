@@ -1,5 +1,6 @@
 import { NavigateFunction } from 'react-router-dom';
 import { AppDispatch } from '../store';
+import { setNotice } from '../store/reducers/auth/authSlice';
 import { setLoading, setTotalPage } from '../store/reducers/users/usersSlice';
 import { IUser } from './../types/types';
 import { ApiClient } from './ApiClient';
@@ -67,13 +68,12 @@ export default class UsersController {
     }
 
     async updateUser(form: { [key: string]: string }, id: string, navigate: NavigateFunction) {
-        const response = await this._apiClient.patch(`/api/users/${id}`, form);
-        const data = await response.json();
-        // return response
-        if (response.ok) {
+        try {
+            const data = await this._apiClient.patch(`/api/users/${id}`, form);
             this.setUser(data);
+            this._dispatch(setNotice("Сохранено"));
             navigate(`/profile/${id}`);
-        } else {
+        } catch {
             alert("Ошибка при сохранении данных");
         }
     }
